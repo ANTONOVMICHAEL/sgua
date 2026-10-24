@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import Journal from "./journal";
 import { JournalStore, STORAGE_KEY, validateState } from "./storage";
 import { rosters } from "./rosters";
-import "./folio.css";
+import "./studio.css";
 const root = createRoot(document.getElementById("root")!);
 try {
   const store = new JournalStore(localStorage, rosters);
