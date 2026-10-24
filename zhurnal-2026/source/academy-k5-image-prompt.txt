@@ -1,0 +1,20 @@
+Use case: precise-object-edit.
+Asset type: a second architectural cover illustration for the existing SGUA academic journal.
+Input roles:
+Image 1 is the approved EDIT TARGET and STYLE authority: SGUA Building 1, a high-quality light architectural miniature with icy blue windows, pearl-white materials, restrained orange wayfinding, white sculptural trees, soft studio daylight and fine realistic detail. Preserve this visual quality and palette.
+Image 2 is the real SGUA BUILDING 5 at 1 Volskaya Street, Saratov, photographed by IrinaYa. It is the IDENTITY authority for the new building: preserve its actual architectural silhouette and distinctive details.
+Image 3 is the traced exterior footprint of a typical upper floor of Building 5 from the user's existing relocation/spatial model. It is the PLAN authority: preserve the asymmetric stepped rear, subtly bowed central frontage, rounded left end, and long right wing projecting diagonally outward. It is NOT a U-shaped building.
+
+Primary request: replace Building 1 in Image 1 with a beautiful, recognizable miniature of Building 5 from Images 2 and 3. This is a single original illustration, not a side-by-side comparison.
+Key architectural identity to retain:
+- At the left is a slender round glazed stair tower with tall vertical blue glazing. Above it rises the characteristic open elliptical metal crown/canopy on slender supports, clearly seen in the photograph. Retain this actual open skeletal crown. It is not a dome, not a helipad, not a sculpture.
+- Behind/alongside the tower is a tall softly curved wall in warm pale masonry, with small inset windows.
+- The broad central volume has large clean reflective-blue curtain-wall glazing, with an almost mirrored front plane and an angled/curved glazed bay. Preserve the large blue glass faces and their real rhythm from the photo; replace messy reflected city textures with serene pale sky reflections.
+- The right wing is light stone/white with orderly smaller square windows, open recessed balconies at the joint with the glass center, and an external diagonal stair/ramp volume at far right. Preserve its outward-angled direction from the plan.
+- Preserve the occupied floor count and vertical rhythm visible in the photograph, with a low wide entrance canopy and shallow glazed ground-level vestibule. Do not invent extra towers or identical wings.
+- The footprint is broad and asymmetrical, roughly twice as long as deep. Use Image 3's outline, not Image 1's U shape.
+
+Art direction: highly crafted architectural model photography, matte porcelain-white / pale warm stone walls, subtle desaturated terracotta on the masonry segment only, powder blue glass, extremely restrained satin-aluminum window framing, precise thin parapets, crisp but soft shadows, physically convincing ambient occlusion and miniature details. A few neat white trees, low pale planters and orange benches on simple pale paving. A single fine orange wayfinding line near the entrance, matching Image 1. No pools.
+Composition: landscape 1536x1024. Elevated three-quarter orthographic/isometric camera facing the actual front as in Image 2, from above its front-left. Keep the entire building and crown fully visible with breathing room around them. The new building sits mainly center-right, filling about 75 percent of width and 65 percent of height; leave generous pale cool-gray negative space at top-left. Pale cool-gray ground and backdrop consistent with Image 1. This must work beneath floating white dashboard cards, so keep the main building legible and avoid excessively tight framing.
+Text: optional only the four small correct Cyrillic letters “СГЮА” on the low entrance canopy. No other text, numbers, slogans or watermarks.
+Avoid: any U-shaped plan, copies of Building 1, generic cube office building, domes, classical columns, neon, gold ornament, dark nighttime background, photographic sky, cars, people, roads with traffic, fake UI, charts, floating widgets, devices, or multiple alternatives. Output the illustration only.

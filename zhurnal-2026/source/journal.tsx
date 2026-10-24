@@ -2,6 +2,7 @@ import React, { useEffect, useId, useMemo, useRef, useState, useSyncExternalStor
 import { BarChart3, ArrowDownToLine, ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, CalendarDays, Check, CheckCheck, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, ClipboardList, Clock3, Download, Ellipsis, FileCheck2, FolderArchive, GraduationCap, LayoutGrid, MessageSquare, Pencil, Plus, RotateCcw, Search, Settings2, Upload, UsersRound, X } from "lucide-react";
 import { Answer, Attendance, Debt, Grade, Group, JournalStore, Session, State, Student, RECOVERY_KEY, DEFAULT_RATING_SETTINGS, csvCell, validateState } from "./storage";
 import GroupCarousel from "./group-carousel";
+import CampusCover from "./campus-cover";
 import RatingDashboard, { RatingSettingsForm } from "./rating-dashboard";
 const statusMeta: Record<Attendance, {
     short: string;
@@ -67,9 +68,7 @@ function JournalOverview({ students, groupCode, session, sessions, marks, answer
   const recorded = students.filter(p => marks.has(p.id)).length;
   const present = students.filter(p => ["present", "late"].includes(marks.get(p.id) ?? "")).length;
   const coverage = students.length ? Math.round(recorded / students.length * 100) : 0;
-  return <section className={`academy-stage ${session ? "stage-recorded" : "stage-first"}`} aria-label="Обзор учебной группы">
-    <img className="campus-scene" src="./academy-sgua-k1.webp" alt="" width="1536" height="1024" fetchPriority="high"/>
-    <div className="stage-wash"/>
+  return <CampusCover recorded={Boolean(session)}>
     <div className="stage-intro"><span className="stage-kicker"><span/>{session ? `${session.kind} · ${session.period}-я пара` : "Личный журнал преподавателя"}</span>
       <h2>{session ? <>{dateText(session.date)}<span>Работаем с группой.</span></> : <>Вся группа.<br/>В одном журнале.</>}</h2>
       <p>{session ? (session.topic || "Посещаемость, ответы и задания — все под рукой.") : "Отмечайте посещаемость, оценивайте ответы и следите за работой студентов."}</p>
@@ -83,8 +82,7 @@ function JournalOverview({ students, groupCode, session, sessions, marks, answer
       <button className="floating-panel stage-stat" onClick={rating}><span className="metric-icon"><MessageSquare size={16}/></span><span><small>Ответы на занятиях</small><strong>{answerCount}<i>за {sessions.length} {countUnit(sessions.length,["занятие","занятия","занятий"])}</i></strong></span><ArrowUpRight size={15}/></button>
       <button className="floating-panel stage-stat" onClick={debts}><span className={`metric-icon ${debtCount ? "orange" : ""}`}><FileCheck2 size={16}/></span><span><small>Открытые долги</small><strong>{debtCount}<i>{debtCount ? "требуют внимания" : "все в порядке"}</i></strong></span><ArrowUpRight size={15}/></button>
     </div>
-    <a className="campus-caption" href="./academy-sgua-k1-LICENSE.txt" target="_blank" rel="noreferrer">Корпус 1 · СГЮА<span>Чернышевского, 104</span></a>
-  </section>;
+  </CampusCover>;
 }
 function EmptyJournal({ students, showStudents }: { students: Student[]; groupCode: string; start: () => void; showStudents: () => void }) {
   return <section className="prepared-roster"><div className="prepared-heading"><span><UsersRound size={17}/>Состав группы<strong>{students.length}</strong></span><button onClick={showStudents}>Все студенты<ArrowUpRight size={16}/></button></div><div className="prepared-people">{students.slice(0,4).map((p,i)=><button key={p.id} onClick={showStudents}><span className="prepared-avatar">{initials(p.fullName)}</span><span><strong>{p.fullName.split(" ")[0]}</strong><small>{p.fullName.split(" ").slice(1).join(" ")}</small></span><ArrowUpRight size={14}/></button>)}</div></section>;

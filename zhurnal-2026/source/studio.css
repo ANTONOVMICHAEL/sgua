@@ -519,3 +519,44 @@ button strong, button b { font-weight: 550; }
   .stage-first .campus-scene { right: -4%; }
   .stage-recorded .campus-scene { right: -15%; }
 }
+
+/* Both academic buildings share one illustration language and an explicit choice. */
+.campus-selector-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: -2px 3px 10px; }
+.campus-selector-label { display: inline-flex; align-items: center; gap: 7px; color: #747e8c; font-size: 10px; }
+.campus-selector { display: inline-flex; align-items: center; gap: 3px; padding: 4px; border-radius: 12px; border: 1px solid #ffffffdf; background: #f7f8faad; }
+.campus-selector button { display: inline-flex; justify-content: center; align-items: center; gap: 7px; min-height: 30px; padding: 0 13px; border-radius: 8px; color: #788391; font-size: 11px; }
+.campus-selector button i { height: 4px; width: 4px; border-radius: 50%; background: #bfc7d2; }
+.campus-selector button.selected { background: #fff; color: #3d4859; box-shadow: 0 2px 5px #3042600b; }
+.campus-selector button.selected i { background: #ff7b37; }
+.campus-selector button:hover:not(.selected) { background: #ffffff80; }
+.academy-cover .academy-stage { margin-top: 0; }
+/* Keep the open crown and entrance visible, and feather the image canvas into the cover. */
+.campus-5 .campus-scene {
+  width: auto; height: 132%; aspect-ratio: 3 / 2; top: -11%; right: 4%; object-fit: fill;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 98%, transparent 100%);
+}
+@media(max-width:780px) {
+  .campus-selector-bar { margin: -1px 2px 10px; gap: 12px; }
+  .campus-selector-label { font-size: 10px; gap: 6px; }
+  .campus-selector-label svg { width: 13px; height: 13px; }
+  .campus-selector { padding: 3px; border-radius: 11px; }
+  .campus-selector button { min-height: 31px; padding-inline: 11px; gap: 6px; font-size: 10px; }
+  .stage-first.campus-5 { min-height: 540px; }
+  .stage-recorded.campus-5 { min-height: 420px; }
+  .campus-5 .campus-scene {
+    width: 104%; height: auto; top: auto; right: -2%; bottom: 54px;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 96%, transparent), linear-gradient(180deg, transparent, #000 12%, #000 91%, transparent);
+    mask-composite: intersect;
+  }
+  .stage-first.campus-5 .stage-progress { bottom: 166px; width: 165px; }
+  .stage-recorded.campus-5 .stage-progress { bottom: 146px; }
+  .stage-recorded.campus-5 .stage-wash { background: linear-gradient(180deg, #edf0f4 0%, #edf0f4 22%, #edf0f400 37%); }
+}
+@media(max-width:370px) {
+  .campus-selector-label { font-size: 9px; }
+  .campus-selector button { font-size: 10px; padding-inline: 10px; }
+}
+@media(prefers-reduced-motion:no-preference) {
+  .campus-scene { animation: campus-arrive .34s ease-out both; }
+  @keyframes campus-arrive { from { opacity: 0; } to { opacity: 1; } }
+}

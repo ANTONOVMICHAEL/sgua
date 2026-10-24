@@ -1,0 +1,116 @@
+{
+  "sourceRepository": "ANTONOVMICHAEL/STRATEGYTRAVELSGUA",
+  "sourceTree": "9051c46ca0df92c6137987754f499d95686448b3",
+  "sourceFile": "data/geometry-k5-extension.json",
+  "sourceBlob": "7ad862493bc3d877732228df98267149ca2b71a1",
+  "building": 5,
+  "floor": "4",
+  "outerRing": [
+    [
+      108.333,
+      92.0
+    ],
+    [
+      106.333,
+      236.667
+    ],
+    [
+      116.0,
+      237.333
+    ],
+    [
+      123.667,
+      249.667
+    ],
+    [
+      133.333,
+      258.667
+    ],
+    [
+      146.667,
+      265.667
+    ],
+    [
+      160.667,
+      268.333
+    ],
+    [
+      161.333,
+      272.667
+    ],
+    [
+      229.333,
+      273.333
+    ],
+    [
+      229.333,
+      323.667
+    ],
+    [
+      283.667,
+      329.333
+    ],
+    [
+      317.667,
+      331.0
+    ],
+    [
+      360.0,
+      331.0
+    ],
+    [
+      412.667,
+      328.0
+    ],
+    [
+      460.333,
+      322.333
+    ],
+    [
+      683.0,
+      423.667
+    ],
+    [
+      739.0,
+      303.667
+    ],
+    [
+      738.667,
+      301.667
+    ],
+    [
+      632.667,
+      253.333
+    ],
+    [
+      633.333,
+      188.333
+    ],
+    [
+      393.0,
+      186.333
+    ],
+    [
+      392.667,
+      139.0
+    ],
+    [
+      242.333,
+      138.0
+    ],
+    [
+      241.333,
+      92.333
+    ]
+  ],
+  "scaleXMetresPerPoint": 0.12752142,
+  "scaleYMetresPerPoint": 0.12752142,
+  "metricStatus": "preliminary_area_calibrated_scan_not_survey",
+  "heightStatus": "conditional_visual_extrusion_not_measured_wall_height",
+  "stackStatus": "disabled_no_confirmed_cross_floor_metric_axis_alignment",
+  "photoReference": "https://commons.wikimedia.org/wiki/File:%D0%A1%D0%93%D0%AE%D0%90_%D1%83%D0%BB_%D0%92%D0%BE%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F_1.jpg",
+  "photoAuthor": "ИринаЯ",
+  "photoDate": "2020-02-21",
+  "illustration": "public/academy-sgua-k5.webp",
+  "note": "Exterior silhouette and reference photo inform a stylized illustration. No room, staff or optimization data are bundled."
+}
