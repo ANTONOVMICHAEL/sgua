@@ -12,7 +12,7 @@ export default function ActivityChart({ entries }: { entries: Entry[] }) {
   const path = (key: 'visits' | 'answers') => entries.map((e,i) => `${i ? 'L' : 'M'}${x(i)},${y(e[key])}`).join(' ');
   const labelIndexes = entries.length <= 4 ? entries.map((_,i) => i) : [0, Math.floor((entries.length - 1) / 2), entries.length - 1];
   return <svg className="activity-plot" viewBox="0 0 680 186" role="img" aria-label={`Посещения и ответы. Занятий на графике: ${entries.length}`}>
-    <defs><linearGradient id="visits-area" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#36B89B" stopOpacity=".17"/><stop offset="1" stopColor="#36B89B" stopOpacity="0"/></linearGradient></defs>
+    <defs><linearGradient id="visits-area" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#82B0E8" stopOpacity=".17"/><stop offset="1" stopColor="#82B0E8" stopOpacity="0"/></linearGradient></defs>
     {[0,max/2,max].map(n=><g key={n}><line x1={left} x2={right} y1={y(n)} y2={y(n)} className="activity-grid"/><text x="0" y={y(n)+4} className="activity-axis">{n}</text></g>)}
     {entries.length>1 && <path d={`${path('visits')} L${x(entries.length-1)},${bottom} L${x(0)},${bottom} Z`} fill="url(#visits-area)"/>}
     <path d={path('visits')} className="activity-line line-visits"/>
