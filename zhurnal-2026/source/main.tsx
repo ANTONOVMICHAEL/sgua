@@ -4,6 +4,8 @@ import Journal from "./journal";
 import { JournalStore, STORAGE_KEY, validateState } from "./storage";
 import { rosters } from "./rosters";
 import "./journal.css";
+import "./light.css";
+import "./experiences.css";
 const root = createRoot(document.getElementById("root")!);
 try {
   const store = new JournalStore(localStorage, rosters);

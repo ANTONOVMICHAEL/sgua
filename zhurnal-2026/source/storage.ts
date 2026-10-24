@@ -6,7 +6,16 @@ export type Session = { id: string; groupCode: string; date: string; period: num
 export type Mark = { studentId: string; sessionId: string; status: Attendance; updatedAt: string };
 export type Answer = { id: string; studentId: string; sessionId: string; grade: Grade; note: string; updatedAt: string };
 export type Debt = { id: string; studentId: string; groupCode: string; sessionId: string; title: string; kind: string; dueDate: string; note: string; status: "open" | "resolved"; resolution: string; createdAt: string; updatedAt: string; resolvedAt: string };
-export type State = { schemaVersion: 2; groups: Group[]; students: Student[]; sessions: Session[]; marks: Mark[]; answers: Answer[]; debts: Debt[] };
+export type RatingSettings = { attendance: number; answerPlus: number; grade2: number; grade3: number; grade4: number; grade5: number; openDebt: number };
+export const DEFAULT_RATING_SETTINGS: RatingSettings = { attendance: 1, answerPlus: 2, grade2: 0, grade3: 1, grade4: 2, grade5: 3, openDebt: 2 };
+export function validateRatingSettings(input: unknown): RatingSettings {
+  if (!input || typeof input !== "object") throw new Error("Проверьте баллы рейтинга");
+  const keys = Object.keys(DEFAULT_RATING_SETTINGS) as (keyof RatingSettings)[];
+  const value = input as RatingSettings;
+  if (keys.some(k => !Number.isInteger(value[k]) || value[k] < 0 || value[k] > 20) || keys.every(k => value[k] === 0)) throw new Error("Баллы должны быть от 0 до 20; хотя бы один показатель должен быть больше нуля");
+  return Object.fromEntries(keys.map(k => [k, value[k]])) as RatingSettings;
+}
+export type State = { schemaVersion: 2; ratingSettings?: RatingSettings; savedAt?: string; groups: Group[]; students: Student[]; sessions: Session[]; marks: Mark[]; answers: Answer[]; debts: Debt[] };
 export type Seed = readonly { code: string; institute: string; students: readonly string[] }[];
 export type StoragePort = Pick<Storage, "getItem" | "setItem">;
 export const STORAGE_KEY = "sgua-journal-v1";
@@ -30,6 +39,8 @@ export function validateState(input: unknown): State {
   ensure(v.answers === undefined || Array.isArray(v.answers), "Повреждены записи ответов");
   ensure(v.debts === undefined || Array.isArray(v.debts), "Повреждены записи задолженностей");
   const s = clone({ ...v, schemaVersion: 2, answers: v.answers ?? [], debts: v.debts ?? [] }) as State;
+  if (s.ratingSettings !== undefined) s.ratingSettings = validateRatingSettings(s.ratingSettings);
+  if (s.savedAt !== undefined) ensure(text(s.savedAt) && Number.isFinite(Date.parse(s.savedAt)), "Повреждена дата сохранения");
   const groupIds = new Set<string>(), studentIds = new Set<string>(), sessionIds = new Set<string>();
   for (const g of s.groups) { ensure(text(g.code, 80) && g.code.trim() && text(g.institute) && Number.isFinite(g.position) && !groupIds.has(g.code), "Поврежден список групп"); groupIds.add(g.code); }
   for (const p of s.students) { ensure(text(p.id, 150) && p.id && !studentIds.has(p.id) && groupIds.has(p.groupCode) && text(p.fullName, 200) && p.fullName.trim() && Number.isFinite(p.position) && [0, 1].includes(p.active), "Поврежден список студентов"); studentIds.add(p.id); }
@@ -56,9 +67,11 @@ export class JournalStore {
     const latest = this.storage.getItem(STORAGE_KEY);
     const draft = latest ? validateState(JSON.parse(latest)) : clone(this.value);
     change(draft);
+    draft.savedAt = stamp();
     this.storage.setItem(STORAGE_KEY, JSON.stringify(draft));
     this.value = draft; this.listeners.forEach(l => l());
   }
+  setRatingSettings(settings: RatingSettings) { const value = validateRatingSettings(settings); this.update(s => { s.ratingSettings = value; }); }
   reload = () => { const raw = this.storage.getItem(STORAGE_KEY); if (raw) { this.value = validateState(JSON.parse(raw)); this.listeners.forEach(l => l()); } };
   export = () => JSON.stringify(this.value, null, 2);
   import = (input: unknown) => {
