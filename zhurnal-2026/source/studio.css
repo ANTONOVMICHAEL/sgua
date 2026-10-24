@@ -513,3 +513,9 @@ button strong, button b { font-weight: 550; }
 /* Keep the compact session cover clear of its floating progress card. */
 @media(max-width:780px) { .stage-recorded .stage-action { display: none; } .stage-recorded .stage-intro p { max-width: 190px; } }
 .activity-axis { fill: #798390; }
+
+/* Frame the SGUA entrance beside the floating panel on narrow screens. */
+@media(max-width:780px) {
+  .stage-first .campus-scene { right: -4%; }
+  .stage-recorded .campus-scene { right: -15%; }
+}

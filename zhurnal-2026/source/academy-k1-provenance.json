@@ -1,0 +1,100 @@
+{
+  "sourceRepository": "ANTONOVMICHAEL/STRATEGYTRAVELSGUA",
+  "sourceTree": "9051c46ca0df92c6137987754f499d95686448b3",
+  "sourceFile": "data/geometry-k1-extension.json",
+  "sourceBlob": "e00ce8bd627717d58db6b381cae2df242a50fec1",
+  "building": 1,
+  "floor": "1",
+  "outerRing": [
+    [
+      382.8,
+      1020.04
+    ],
+    [
+      591.48,
+      1020.04
+    ],
+    [
+      591.48,
+      924.64
+    ],
+    [
+      531,
+      924.64
+    ],
+    [
+      531,
+      173.8
+    ],
+    [
+      831.12,
+      173.8
+    ],
+    [
+      831.12,
+      920.32
+    ],
+    [
+      774.36,
+      920.32
+    ],
+    [
+      774.36,
+      1026.16
+    ],
+    [
+      1705.2,
+      1026.16
+    ],
+    [
+      1705.2,
+      923.08
+    ],
+    [
+      1650.36,
+      923.08
+    ],
+    [
+      1650.36,
+      175.6
+    ],
+    [
+      1945.44,
+      175.6
+    ],
+    [
+      1945.44,
+      923.08
+    ],
+    [
+      1885.08,
+      923.08
+    ],
+    [
+      1885.08,
+      1026.16
+    ],
+    [
+      2094.84,
+      1026.16
+    ],
+    [
+      2094.84,
+      1327.72
+    ],
+    [
+      382.8,
+      1327.72
+    ]
+  ],
+  "metricOriginPdf": [
+    398.16,
+    177.88
+  ],
+  "scaleXMetresPerPoint": 0.052827328074289914,
+  "scaleYMetresPerPoint": 0.05278716216216216,
+  "heightStatus": "no_source_elevation_calibration",
+  "footprintStatus": "preliminary_source_traced_U_envelope; small_facade_recesses_simplified",
+  "illustration": "public/academy-sgua-k1.webp",
+  "note": "Only the exterior outline is retained; no room/staff/optimization data are included in the teaching journal."
+}

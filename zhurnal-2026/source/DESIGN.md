@@ -15,13 +15,17 @@
 - Рейтинг — светлая панель лидера, график посещений и ответов, блок показателей, топ 3 и таблица всех студентов.
 - Пустые показатели не подменяются демонстрационными именами, процентами или результатами.
 
-## Изображение
+## Изображение корпуса 1 · версия 7
 
-`public/academy-campus.webp`, 1536×1024, оригинальная иллюстрация. Создана встроенным imagegen; сохранена в WebP quality 87. Не является изображением реального здания СГЮА. Все счетчики, формы, графики и карточки поверх сцены — настоящие HTML/SVG-компоненты.
+`public/academy-sgua-k1.webp`, 1536×1024. Первоначальный вымышленный кампус заменен по просьбе пользователя на стилизацию корпуса 1 СГЮА, Чернышевского, 104. Материалы, изометрическая подача и палитра версии 6 сохранены.
 
-Точный запрос:
+Основа — `data/geometry-k1-extension.json` из `ANTONOVMICHAEL/STRATEGYTRAVELSGUA`: blob `e00ce8bd627717d58db6b381cae2df242a50fec1`, дерево `9051c46ca0df92c6137987754f499d95686448b3`. Взяты П-образный контур, пропорции крыльев и узкие сочленения. Минимальные данные происхождения — `academy-k1-provenance.json`. Исходная модель прямо обозначает контур как предварительный и не содержит калиброванных высот: новая иллюстрация не выдается за обмерный рендер.
 
-> Use case: stylized-concept. Asset type: wide background illustration for a real light academic attendance dashboard, not a UI mockup. Primary request: a meticulous premium isometric architectural model of a contemporary law academy learning campus, in the visual language of clean white and icy blue industrial digital-twin scenes. Scene: a coherent broad miniature campus on a pale cool-gray ground plane: a low three-storey modern library with glass blue window grids on the right, open-roof teaching rooms with orderly rows of desks in the middle, a lecture auditorium with gently curved stepped seating on the left, landscaped courtyard paths and a few very simple white sculptural trees. A single restrained vivid orange wayfinding line connects the buildings across the courtyard; small orange seats punctuate otherwise white and light-blue spaces. No people. Composition: wide horizontal, isometric orthographic camera from above, detailed model occupies most of image with generous pale gray negative space at far left and top suitable for floating interface cards. Architecture is precise and beautiful, realistic scale-model photography and high-end 3D rendering, matte ceramic white buildings, cool powder-blue glass, satin aluminum details, soft ambient occlusion, diffused studio daylight, soft clear shadows. Color palette: near-white, cool gray #E9EBEF, powder blue #BDD4E9, very restrained orange #FF6314 accents. Make architecture feel quietly sophisticated, calm, and credible, no sci-fi. Background an even very light cool gray fading smoothly to #E9EBEF at edges. Landscape 1536x1024. Constraints: absolutely no text, letters, numbers, logo, UI panels, dashboard widgets, diagrams, buttons, fake data, screens, devices, watermarks, black background, gold or teal. This is an original illustrative miniature academy, not an actual identified building.
+Фасад сверялся по фотографии ИринаЯ «СГЮА корпус 1.jpg», 21.02.2020, Wikimedia Commons (CC BY-SA 4.0). Узнаваемые признаки: длинный корпус, четыре ряда широких окон, горизонтальные пояса, контрастные межоконные панели, широкий плоский козырек и стеклянный тамбур центрального входа. Атрибуция и условия использования изображения — `public/academy-sgua-k1-LICENSE.txt`; ссылка на нее доступна из подписи корпуса. Благоустройство, подсветка и оранжевая линия декоративные.
+
+Создано встроенным imagegen с четырьмя референсами: прежнее одобренное изображение (стиль), объем из исходного контура (геометрия), вид контура сверху (пропорции), фотография корпуса (фасад). Все показатели поверх изображения остаются HTML/SVG-компонентами. Старый файл `academy-campus.webp` сохранен для совместимости с кэшированной версией.
+
+Полный запрос изображения сохранен в `academy-k1-image-prompt.txt`.
 
 ## Сохранение
 

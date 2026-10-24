@@ -68,7 +68,7 @@ function JournalOverview({ students, groupCode, session, sessions, marks, answer
   const present = students.filter(p => ["present", "late"].includes(marks.get(p.id) ?? "")).length;
   const coverage = students.length ? Math.round(recorded / students.length * 100) : 0;
   return <section className={`academy-stage ${session ? "stage-recorded" : "stage-first"}`} aria-label="Обзор учебной группы">
-    <img className="campus-scene" src="./academy-campus.webp" alt="" width="1536" height="1024" fetchPriority="high"/>
+    <img className="campus-scene" src="./academy-sgua-k1.webp" alt="" width="1536" height="1024" fetchPriority="high"/>
     <div className="stage-wash"/>
     <div className="stage-intro"><span className="stage-kicker"><span/>{session ? `${session.kind} · ${session.period}-я пара` : "Личный журнал преподавателя"}</span>
       <h2>{session ? <>{dateText(session.date)}<span>Работаем с группой.</span></> : <>Вся группа.<br/>В одном журнале.</>}</h2>
@@ -83,7 +83,7 @@ function JournalOverview({ students, groupCode, session, sessions, marks, answer
       <button className="floating-panel stage-stat" onClick={rating}><span className="metric-icon"><MessageSquare size={16}/></span><span><small>Ответы на занятиях</small><strong>{answerCount}<i>за {sessions.length} {countUnit(sessions.length,["занятие","занятия","занятий"])}</i></strong></span><ArrowUpRight size={15}/></button>
       <button className="floating-panel stage-stat" onClick={debts}><span className={`metric-icon ${debtCount ? "orange" : ""}`}><FileCheck2 size={16}/></span><span><small>Открытые долги</small><strong>{debtCount}<i>{debtCount ? "требуют внимания" : "все в порядке"}</i></strong></span><ArrowUpRight size={15}/></button>
     </div>
-    <span className="campus-caption">Учебное пространство<span>СГЮА / Институт прокуратуры</span></span>
+    <a className="campus-caption" href="./academy-sgua-k1-LICENSE.txt" target="_blank" rel="noreferrer">Корпус 1 · СГЮА<span>Чернышевского, 104</span></a>
   </section>;
 }
 function EmptyJournal({ students, showStudents }: { students: Student[]; groupCode: string; start: () => void; showStudents: () => void }) {
