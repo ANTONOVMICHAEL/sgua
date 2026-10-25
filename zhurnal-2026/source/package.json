@@ -1,24 +1,25 @@
 {
   "name": "sgua-journal",
-  "version": "5.1.0",
+  "version": "6.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "test": "node --experimental-strip-types storage.test.mjs && node --experimental-strip-types rating.test.mjs && node --experimental-strip-types multi-records.test.mjs && node --experimental-strip-types session-lifecycle.test.mjs"
+    "test": "node --experimental-strip-types storage.test.mjs && node --experimental-strip-types rating.test.mjs && node --experimental-strip-types multi-records.test.mjs && node --experimental-strip-types session-lifecycle.test.mjs && node --experimental-strip-types cloud-sync.test.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
     "lucide-react": "1.31.0",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "6.0.2",
-    "vite": "8.0.13",
-    "typescript": "5.9.3",
+    "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@types/node": "22.19.19"
+    "@vitejs/plugin-react": "6.0.2",
+    "typescript": "5.9.3",
+    "vite": "8.0.13"
   }
 }
