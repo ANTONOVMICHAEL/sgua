@@ -1,4 +1,5 @@
 import type { RatingSettings, State, Student } from './storage';
+import { isVisibleDebt } from './storage.ts';
 
 export type RatingRow = {
   student: Student;
@@ -23,7 +24,7 @@ export function buildRanking(state: State, codes: string[], settings: RatingSett
   const rows = state.students.filter(p => p.active && allowed.has(p.groupCode)).map(student => {
     const marks = state.marks.filter(m => m.studentId === student.id && sessionIds.has(m.sessionId));
     const answers = state.answers.filter(a => a.studentId === student.id && sessionIds.has(a.sessionId));
-    const debts = state.debts.filter(d => d.studentId === student.id);
+    const debts = state.debts.filter(d => d.studentId === student.id && isVisibleDebt(state, d));
     const present = marks.filter(m => m.status === 'present' || m.status === 'late').length;
     const denominator = marks.filter(m => m.status !== 'excused').length;
     const numeric = answers.filter(a => a.grade !== '+').map(a => Number(a.grade));

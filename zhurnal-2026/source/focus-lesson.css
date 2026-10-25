@@ -26,7 +26,7 @@
 .focus-desk .focus-page-count > small { font-size: 13px; color: var(--focus-muted); }
 .focus-desk .focus-roll-progress { display: flex; align-items: center; gap: 16px; margin-left: auto; margin-right: 10px; font-size: 12px; color: var(--focus-muted); }
 .focus-desk .focus-roll-progress > i { width: 102px; height: 4px; overflow: hidden; border-radius: 5px; background: #e5e8ee; }
-.focus-desk .focus-roll-progress > i > b { display: block; height: 100%; background: #557ee8; border-radius: inherit; transition: width .22s ease; }
+.focus-desk .focus-roll-progress > i > b { display: block; height: 100%; background: #486b96; border-radius: inherit; transition: width .22s ease; }
 .focus-desk .focus-turns { display: flex; gap: 7px; }
 .focus-desk .focus-turns > button { display: grid; place-items: center; width: 40px; height: 40px; background: #fff; border: 1px solid #d7dde5; border-radius: 50%; color: #263342; transition: background .15s, border-color .15s; }
 .focus-desk .focus-turns > button:hover:not(:disabled) { background: #edf1f8; border-color: #bac6d8; }
@@ -36,16 +36,16 @@
 .focus-desk .focus-identity-line { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 25px; font-size: 12px; }
 .focus-desk .focus-identity-line > span { color: #566172; font-weight: 500; letter-spacing: .015em; }
 .focus-desk .focus-identity-line > button { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--focus-muted); }
-.focus-desk .focus-identity-line > button:hover { color: #345bc0; }
+.focus-desk .focus-identity-line > button:hover { color: #345273; }
 .focus-desk .focus-person-name { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; text-align: left; margin-bottom: 37px; }
 .focus-desk .focus-person-name > strong { font-size: clamp(33px,3.2vw,46px); font-weight: 500; line-height: 1.08; letter-spacing: -.055em; color: var(--focus-ink); overflow-wrap: anywhere; transition: color .15s; }
 .focus-desk .focus-person-name > span { font-size: 20px; line-height: 1.4; letter-spacing: -.025em; font-weight: 400; color: #647080; overflow-wrap: anywhere; }
-.focus-desk .focus-person-name:hover > strong { color: #3d64c5; }
+.focus-desk .focus-person-name:hover > strong { color: #3f5f88; }
 .focus-desk .focus-attendance-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 13px; }
 .focus-desk .focus-attendance-heading > h3 { font-size: 13px; font-weight: 500; color: #303c4c; }
 .focus-desk .focus-attendance-heading > span { font-size: 12px; color: var(--focus-muted); }
-.focus-desk .focus-attendance-heading > span.is-present { color: #315bbd; }
-.focus-desk .focus-attendance-heading > span.is-absent { color: #b04c29; }
+.focus-desk .focus-attendance-heading > span.is-present { color: #3f5f88; }
+.focus-desk .focus-attendance-heading > span.is-absent { color: #975c58; }
 .focus-desk .focus-attendance-heading > span.is-late { color: #986b1b; }
 .focus-desk .focus-attendance-heading > span.is-excused { color: #7b5a9e; }
 .focus-desk .focus-attendance { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
@@ -54,43 +54,43 @@
 .focus-desk .focus-attendance > button > span { font-size: 12px; line-height: 1.5; color: inherit; overflow-wrap: anywhere; }
 .focus-desk .focus-attendance > button > svg { position: absolute; top: 7px; right: 7px; }
 .focus-desk .focus-attendance > button:hover { border-color: #a5b6d2; background: #f8faff; }
-.focus-desk .focus-attendance > button.is-present { background: #e9efff; border-color: #6488e5; color: #2f56ac; }
-.focus-desk .focus-attendance > button.is-absent { background: #fff0e9; border-color: #e6a486; color: #a54524; }
+.focus-desk .focus-attendance > button.is-present { background: #edf2f8; border-color: #8ca4bf; color: #3f5f88; }
+.focus-desk .focus-attendance > button.is-absent { background: #f6edec; border-color: #d4b2ae; color: #975c58; }
 .focus-desk .focus-attendance > button.is-late { background: #fff7df; border-color: #ddc070; color: #91651b; }
 .focus-desk .focus-attendance > button.is-excused { background: #f0ecf8; border-color: #b7a0ce; color: #71518f; }
 .focus-desk .focus-next-unmarked { display: flex; align-items: center; justify-content: space-between; gap: 18px; width: 100%; min-height: 44px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--focus-line); color: #33445b; font-size: 12px; text-align: left; }
-.focus-desk .focus-next-unmarked:hover:not(:disabled) { color: #345bc0; }
+.focus-desk .focus-next-unmarked:hover:not(:disabled) { color: #345273; }
 .focus-desk .focus-next-unmarked:disabled { color: #8d95a0; }
 .focus-desk .focus-work-side { min-width: 0; padding: 29px 29px 25px; background: #fff; border-left: 1px solid var(--focus-line); }
 .focus-desk .focus-responses-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; }
 .focus-desk .focus-responses-heading > h3 { font-size: 19px; font-weight: 500; letter-spacing: -.65px; color: var(--focus-ink); }
 .focus-desk .focus-responses-heading > span { display: grid; place-items: center; min-width: 25px; height: 25px; padding: 0 5px; background: #f0f3f7; border-radius: 50%; font-size: 12px; color: #556274; font-variant-numeric: tabular-nums; }
 .focus-desk .focus-answer-history { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; min-height: 92px; max-height: 155px; overflow: auto; padding: 20px 0 24px; scrollbar-width: thin; }
-.focus-desk .focus-answer-history > button { min-width: 36px; height: 40px; padding: 0 9px; color: #355cae; background: #ecf1ff; border: 0; border-radius: 6px; font-size: 25px; line-height: 1; font-weight: 450; letter-spacing: -.04em; }
-.focus-desk .focus-answer-history > button:hover { background: #dce6fd; }
-.focus-desk .focus-answer-history > button.focus-low-grade { color: #b14b28; background: #fff0e8; }
+.focus-desk .focus-answer-history > button { min-width: 36px; height: 40px; padding: 0 9px; color: #3f5f88; background: #edf2f8; border: 0; border-radius: 6px; font-size: 25px; line-height: 1; font-weight: 450; letter-spacing: -.04em; }
+.focus-desk .focus-answer-history > button:hover { background: #dfe8f3; }
+.focus-desk .focus-answer-history > button.focus-low-grade { color: #975c58; background: #f6edec; }
 .focus-desk .focus-answer-history > p { color: #8a929e; font-size: 13px; }
 .focus-desk .focus-quick-label { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 9px 0 12px; }
 .focus-desk .focus-quick-label > span { font-size: 12px; font-weight: 500; color: #465366; }
 .focus-desk .focus-quick-label > small { font-size: 11px; color: #838b97; }
 .focus-desk .focus-quick-grades { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 6px; }
 .focus-desk .focus-quick-grades > button { display: grid; place-items: center; height: 51px; border: 1px solid #dbe1ea; border-radius: 8px; background: #fafbfd; color: #27364c; font-size: 27px; font-weight: 450; letter-spacing: -.04em; transition: background .15s, border-color .15s, color .15s; }
-.focus-desk .focus-quick-grades > button:first-child { color: #f36a35; background: #fff3ed; border-color: #f5d5c6; }
-.focus-desk .focus-quick-grades > button:hover { color: #fff; background: #f36a35; border-color: #f36a35; }
+.focus-desk .focus-quick-grades > button:first-child { color: #3f5f88; background: #edf2f8; border-color: #d8e3ef; }
+.focus-desk .focus-quick-grades > button:hover { color: #fff; background: #3f5f88; border-color: #3f5f88; }
 .focus-desk .focus-quick-grades > button:active { transform: translateY(1px); }
 .focus-desk .focus-answer-tools { display: flex; justify-content: space-between; gap: 13px; flex-wrap: wrap; margin-top: 13px; min-height: 29px; }
 .focus-desk .focus-answer-tools > button { display: flex; align-items: center; gap: 7px; min-height: 29px; padding: 4px 0; color: #647187; font-size: 12px; }
-.focus-desk .focus-answer-tools > button:hover { color: #345bc0; }
+.focus-desk .focus-answer-tools > button:hover { color: #345273; }
 .focus-desk .focus-debt-link { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 51px; padding-top: 16px; margin-top: 25px; border-top: 1px solid #e2e6ec; text-align: left; color: #657185; font-size: 12px; }
 .focus-desk .focus-debt-link > span { flex: 1; line-height: 1.6; }
 .focus-desk .focus-debt-link > b { color: #465970; font-size: 12px; font-weight: 500; }
-.focus-desk .focus-debt-link.has-debts { color: #a34e2f; }
-.focus-desk .focus-debt-link.has-debts > b { color: #f36a35; font-size: 24px; font-weight: 400; }
+.focus-desk .focus-debt-link.has-debts { color: #91645e; }
+.focus-desk .focus-debt-link.has-debts > b { color: #3f5f88; font-size: 24px; font-weight: 400; }
 .focus-desk .focus-desk-footer { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 51px; padding: 14px 28px; border-top: 1px solid var(--focus-line); background: #f6f7f9; color: #7b8490; font-size: 11px; line-height: 1.7; }
-.focus-desk .focus-desk-footer > span.focus-feedback-error { color: #b94b29; }
+.focus-desk .focus-desk-footer > span.focus-feedback-error { color: #975c58; }
 .focus-desk .focus-key-hint { display: flex; align-items: center; gap: 6px; color: #838d9c; }
 .focus-desk .focus-key-hint > kbd { min-width: 20px; height: 20px; padding: 0 4px; background: #fff; border: 1px solid #d9dfe7; border-radius: 4px; font: inherit; text-align: center; color: #69768a; }
-.focus-desk button:focus-visible { outline: 2px solid #557ee8; outline-offset: 3px; }
+.focus-desk button:focus-visible { outline: 2px solid #486b96; outline-offset: 3px; }
 .focus-empty { padding: 60px 25px; text-align: center; color: #6c7582; }
 .focus-empty h3 { color: #18212b; font-size: 27px; font-weight: 500; letter-spacing: -.8px; }
 .focus-empty p { margin-top: 13px; font-size: 13px; line-height: 1.8; }

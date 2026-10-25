@@ -5,7 +5,7 @@
 .dialog:has(.dossier) .dialog-head p { color: #6c7582; font-size: 12px; letter-spacing: .02em; margin-bottom: 10px; }
 .dialog:has(.dossier) .profile-navigation { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin: 0 0 24px; padding: 0 0 18px; border-bottom: 1px solid #e0e5eb; color: #6c7582; }
 .dialog:has(.dossier) .profile-navigation > button { display: flex; align-items: center; gap: 6px; padding: 5px 0; color: #6c7582; font-size: 12px; }
-.dialog:has(.dossier) .profile-navigation > button:hover:not(:disabled) { color: #3f68ce; }
+.dialog:has(.dossier) .profile-navigation > button:hover:not(:disabled) { color: #3f5f88; }
 .dialog:has(.dossier) .profile-navigation > button:disabled { opacity: .3; }
 .dialog:has(.dossier) .profile-navigation > span { font-size: 11px; color: #6c7582; font-variant-numeric: tabular-nums; }
 .dossier.dossier { --dossier-ink: #18212b; --dossier-muted: #697585; --dossier-line: #e1e5ec; color: var(--dossier-ink); min-width: 0; }
@@ -15,11 +15,11 @@
 .dossier .dossier-group > strong { color: #3c495b; font-size: 14px; font-weight: 500; letter-spacing: -.2px; white-space: nowrap; }
 .dossier .dossier-group > span { color: #6c7582; font-size: 12px; }
 .dossier .dossier-place { display: flex; align-items: center; gap: 9px; padding-right: 21px; border-right: 1px solid #dce2eb; }
-.dossier .dossier-place > strong { color: #4f73bd; font-size: 36px; font-weight: 450; letter-spacing: -1.7px; line-height: 1; }
+.dossier .dossier-place > strong { color: #486b96; font-size: 36px; font-weight: 450; letter-spacing: -1.7px; line-height: 1; }
 .dossier .dossier-place > span { font-size: 11px; color: #6c7582; line-height: 1.6; }
 .dossier .dossier-edit { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 8px 0 8px 5px; color: #6c7582; font-size: 12px; }
-.dossier .dossier-edit:hover { color: #3f68ce; }
-.dossier button:focus-visible { outline: 2px solid #557ee8; outline-offset: 4px; }
+.dossier .dossier-edit:hover { color: #3f5f88; }
+.dossier button:focus-visible { outline: 2px solid #486b96; outline-offset: 4px; }
 .dossier .dossier-numbers { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: 25px 0 26px; margin-bottom: 21px; border-top: 1px solid #dce2eb; border-bottom: 1px solid #dce2eb; border-radius: 0; background: transparent; }
 .dossier .dossier-numbers > div { min-width: 0; padding: 0 21px; border-right: 1px solid #e3e7ed; }
 .dossier .dossier-numbers > div:first-child { padding-left: 0; }
@@ -28,62 +28,62 @@
 .dossier .dossier-numbers strong { display: block; margin-top: 6px; color: #263b5d; font-size: 47px; font-weight: 450; letter-spacing: -2.4px; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .dossier .dossier-numbers strong > small { margin-left: 2px; font-size: 19px; font-weight: 400; letter-spacing: -.6px; color: #6d7e97; }
 .dossier .dossier-numbers p { margin-top: 11px; color: #6c7582; font-size: 11px; line-height: 1.65; overflow-wrap: anywhere; }
-.dossier .dossier-numbers .dossier-number-debts strong { color: #d2643b; }
-.dossier .dossier-numbers .dossier-number-debts > span { color: #9f6c58; }
+.dossier .dossier-numbers .dossier-number-debts strong { color: #996460; }
+.dossier .dossier-numbers .dossier-number-debts > span { color: #91645e; }
 .dossier .dossier-tabs { display: flex; align-items: center; gap: 29px; border-bottom: 1px solid var(--dossier-line); }
 .dossier .dossier-tabs > button { display: flex; align-items: center; gap: 8px; min-height: 49px; margin-bottom: -1px; padding: 0 0 12px; border-bottom: 2px solid transparent; color: #6c7582; font-size: 15px; font-weight: 450; letter-spacing: -.3px; }
 .dossier .dossier-tabs > button > span { color: #6c7582; font-size: 12px; font-weight: 400; }
-.dossier .dossier-tabs > button[aria-selected=true] { color: #243650; border-color: #557ee8; }
+.dossier .dossier-tabs > button[aria-selected=true] { color: #243650; border-color: #486b96; }
 .dossier .dossier-panel { padding-top: 24px; }
 .dossier .dossier-timeline { display: flex; flex-direction: column; gap: 28px; }
 .dossier .dossier-day { display: grid; grid-template-columns: 105px minmax(0,1fr); gap: 22px; position: relative; }
 .dossier .dossier-day > h3 { padding-top: 16px; color: #6c7582; font-size: 11px; font-weight: 400; line-height: 1.8; letter-spacing: 0; }
 .dossier .dossier-day-entries { display: flex; flex-direction: column; position: relative; min-width: 0; padding-left: 22px; border-left: 1px solid #dde4ed; }
-.dossier .dossier-day-entries::before { content: ''; position: absolute; left: -4px; top: 22px; width: 7px; height: 7px; background: #a4b8df; border-radius: 50%; box-shadow: 0 0 0 5px #fff; }
+.dossier .dossier-day-entries::before { content: ''; position: absolute; left: -4px; top: 22px; width: 7px; height: 7px; background: #b5c4d6; border-radius: 50%; box-shadow: 0 0 0 5px #fff; }
 .dossier .dossier-lesson { display: flex; align-items: flex-start; gap: 13px; width: 100%; min-width: 0; padding: 15px 0 21px; border-bottom: 1px solid #edf0f5; text-align: left; border-radius: 0; }
 .dossier .dossier-lesson:last-child { padding-bottom: 0; border-bottom: 0; }
-.dossier .dossier-lesson:hover .dossier-lesson-copy > strong { color: #456dca; }
+.dossier .dossier-lesson:hover .dossier-lesson-copy > strong { color: #3f5f88; }
 .dossier .dossier-attendance { display: grid; place-items: center; flex-shrink: 0; width: 30px; height: 33px; border-radius: 7px; background: #f1f3f6; color: #6c7582; font-size: 13px; font-weight: 500; }
-.dossier .dossier-attendance.present { background: #ecf1ff; color: #476bc4; }
-.dossier .dossier-attendance.absent { background: #fff0e8; color: #c46a45; }
+.dossier .dossier-attendance.present { background: #edf2f8; color: #3f5f88; }
+.dossier .dossier-attendance.absent { background: #f6edec; color: #996460; }
 .dossier .dossier-attendance.late { background: #fff7e0; color: #a48438; }
 .dossier .dossier-attendance.excused { background: #f2eff8; color: #927ca9; }
 .dossier .dossier-lesson-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .dossier .dossier-lesson-copy > strong { color: #334258; font-size: 14px; font-weight: 500; line-height: 1.55; letter-spacing: -.15px; overflow-wrap: anywhere; transition: color .15s; }
 .dossier .dossier-lesson-copy > small { color: #6c7582; font-size: 11px; line-height: 1.7; }
 .dossier .dossier-lesson-state { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: #6c7582; font-size: 11px; line-height: 1.7; }
-.dossier .dossier-lesson-state em { padding: 2px 6px; border-radius: 4px; background: #fff2eb; color: #c07855; font-size: 11px; font-style: normal; }
+.dossier .dossier-lesson-state em { padding: 2px 6px; border-radius: 4px; background: #f6edec; color: #996460; font-size: 11px; font-style: normal; }
 .dossier .dossier-answer-notes { display: flex; flex-direction: column; gap: 7px; margin-top: 6px; color: #68778c; font-size: 12px; line-height: 1.8; }
-.dossier .dossier-answer-notes > span { padding-left: 10px; border-left: 2px solid #dfe7f5; white-space: pre-line; overflow-wrap: anywhere; }
+.dossier .dossier-answer-notes > span { padding-left: 10px; border-left: 2px solid #dfe7f0; white-space: pre-line; overflow-wrap: anywhere; }
 .dossier .dossier-grades { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 5px; flex-shrink: 0; max-width: 108px; padding-top: 1px; }
-.dossier .dossier-grades > b { display: grid; place-items: center; min-width: 24px; height: 29px; padding: 0 5px; border-radius: 5px; background: #edf2ff; color: #4c6db7; font-size: 15px; font-weight: 450; }
-.dossier .dossier-grades > b.dossier-grade-low { color: #bb6949; background: #fff0e9; }
+.dossier .dossier-grades > b { display: grid; place-items: center; min-width: 24px; height: 29px; padding: 0 5px; border-radius: 5px; background: #edf2f8; color: #3f5f88; font-size: 15px; font-weight: 450; }
+.dossier .dossier-grades > b.dossier-grade-low { color: #996460; background: #f6edec; }
 .dossier .dossier-grades > span { padding-top: 3px; color: #6c7582; font-size: 11px; line-height: 1.8; }
 .dossier .dossier-debt-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 8px; }
 .dossier .dossier-debt-toolbar > div { display: flex; align-items: center; gap: 18px; }
 .dossier .dossier-debt-toolbar > div > button { display: flex; align-items: center; gap: 6px; min-height: 36px; padding-bottom: 5px; border-bottom: 1px solid transparent; color: #6c7582; font-size: 12px; }
-.dossier .dossier-debt-toolbar > div > button[aria-pressed=true] { color: #3c526f; border-color: #a8bad7; }
+.dossier .dossier-debt-toolbar > div > button[aria-pressed=true] { color: #3c526f; border-color: #b5c4d6; }
 .dossier .dossier-debt-toolbar > div > button > span { color: #6c7582; font-size: 11px; }
-.dossier .dossier-add-debt { display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 0; color: #c9653f; font-size: 12px; }
+.dossier .dossier-add-debt { display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 0; color: #3f5f88; font-size: 12px; }
 .dossier .dossier-debt { display: flex; align-items: flex-start; gap: 13px; width: 100%; padding: 22px 0; text-align: left; border-bottom: 1px solid #e9edf3; }
-.dossier .dossier-debt:hover .dossier-debt-copy > strong { color: #bb613e; }
+.dossier .dossier-debt:hover .dossier-debt-copy > strong { color: #3f5f88; }
 .dossier .dossier-debt-sign { display: grid; place-items: center; width: 23px; height: 27px; flex-shrink: 0; color: #7c9d89; }
-.dossier .dossier-debt-sign > span { width: 6px; height: 6px; background: #e69973; border-radius: 50%; box-shadow: 0 0 0 5px #fff2eb; }
+.dossier .dossier-debt-sign > span { width: 6px; height: 6px; background: #b58f8b; border-radius: 50%; box-shadow: 0 0 0 5px #f6edec; }
 .dossier .dossier-debt-copy { display: flex; flex: 1; flex-direction: column; min-width: 0; gap: 6px; }
 .dossier .dossier-debt-copy > strong { color: #35455d; font-size: 14px; font-weight: 500; line-height: 1.55; overflow-wrap: anywhere; }
 .dossier .dossier-debt-copy > small { font-size: 11px; color: #6c7582; line-height: 1.8; }
 .dossier .dossier-debt-copy > p { color: #6c7582; font-size: 12px; line-height: 1.8; white-space: pre-line; overflow-wrap: anywhere; }
 .dossier .dossier-debt-copy > .dossier-resolution { color: #789283; }
-.dossier .dossier-debt-date { max-width: 110px; flex-shrink: 0; color: #ad866e; font-size: 11px; line-height: 1.7; text-align: right; }
-.dossier .dossier-debt-date > small { display: block; margin-top: 4px; color: #af9788; font-size: 11px; line-height: 1.8; }
-.dossier .dossier-debt.overdue .dossier-debt-date, .dossier .dossier-debt.overdue .dossier-debt-date > small { color: #ca6a47; }
+.dossier .dossier-debt-date { max-width: 110px; flex-shrink: 0; color: #8e7672; font-size: 11px; line-height: 1.7; text-align: right; }
+.dossier .dossier-debt-date > small { display: block; margin-top: 4px; color: #9e8c89; font-size: 11px; line-height: 1.8; }
+.dossier .dossier-debt.overdue .dossier-debt-date, .dossier .dossier-debt.overdue .dossier-debt-date > small { color: #996460; }
 .dossier .dossier-debt.resolved .dossier-debt-date, .dossier .dossier-debt.resolved .dossier-debt-date > small { color: #829b8d; }
 .dossier .dossier-debt.resolved .dossier-debt-copy > strong { color: #75867c; }
 .dossier .dossier-empty { display: flex; flex-direction: column; align-items: flex-start; min-height: 185px; padding: 26px 0 31px; }
-.dossier .dossier-empty-rule { width: 28px; height: 3px; margin-bottom: 22px; border-radius: 2px; background: #adc0e7; }
+.dossier .dossier-empty-rule { width: 28px; height: 3px; margin-bottom: 22px; border-radius: 2px; background: #b5c4d6; }
 .dossier .dossier-empty h3 { color: #344760; font-size: 25px; font-weight: 450; letter-spacing: -.9px; line-height: 1.3; }
 .dossier .dossier-empty p { max-width: 365px; margin-top: 12px; color: #6c7582; font-size: 13px; line-height: 1.8; }
-.dossier .dossier-empty-debt .dossier-empty-rule { background: #e4b293; }
+.dossier .dossier-empty-debt .dossier-empty-rule { background: #bdc9d7; }
 .dossier .dossier-footnote { margin-top: 29px; padding-top: 19px; border-top: 1px solid #e8edf4; color: #6c7582; font-size: 11px; line-height: 1.8; }
 @media (max-width: 760px) {
   .dialog.dialog:has(.dossier) { padding: 27px 25px; border-radius: 18px; }

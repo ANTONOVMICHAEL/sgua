@@ -2,7 +2,7 @@ export type Attendance = "present" | "absent" | "late" | "excused";
 export type Grade = "+" | "2" | "3" | "4" | "5";
 export type Group = { code: string; institute: string; position: number };
 export type Student = { id: string; groupCode: string; position: number; fullName: string; active: number };
-export type Session = { id: string; groupCode: string; date: string; period: number; kind: string; topic: string; createdAt: string; deletedAt?: string };
+export type Session = { id: string; groupCode: string; date: string; period: number; kind: string; topic: string; createdAt: string; deletedAt?: string; completedAt?: string };
 export type Mark = { studentId: string; sessionId: string; status: Attendance; updatedAt: string };
 export type Answer = { id: string; studentId: string; sessionId: string; grade: Grade; note: string; createdAt?: string; updatedAt: string };
 export type Debt = { id: string; studentId: string; groupCode: string; sessionId: string; title: string; kind: string; dueDate: string; note: string; status: "open" | "resolved"; resolution: string; createdAt: string; updatedAt: string; resolvedAt: string };
@@ -16,6 +16,10 @@ export function validateRatingSettings(input: unknown): RatingSettings {
   return Object.fromEntries(keys.map(k => [k, value[k]])) as RatingSettings;
 }
 export type State = { schemaVersion: 3; ratingSettings?: RatingSettings; savedAt?: string; groups: Group[]; students: Student[]; sessions: Session[]; marks: Mark[]; answers: Answer[]; debts: Debt[] };
+/** A removed session takes its linked assignments out of working views, without erasing them. */
+export function isVisibleDebt(state: Pick<State, "sessions">, debt: Debt): boolean {
+  return !debt.sessionId || !state.sessions.some(session => session.id === debt.sessionId && Boolean(session.deletedAt));
+}
 export type Seed = readonly { code: string; institute: string; students: readonly string[] }[];
 export type StoragePort = Pick<Storage, "getItem" | "setItem">;
 export const STORAGE_KEY = "sgua-journal-v1";
@@ -44,7 +48,7 @@ export function validateState(input: unknown): State {
   const groupIds = new Set<string>(), studentIds = new Set<string>(), sessionIds = new Set<string>();
   for (const g of s.groups) { ensure(text(g.code, 80) && g.code.trim() && text(g.institute) && Number.isFinite(g.position) && !groupIds.has(g.code), "Поврежден список групп"); groupIds.add(g.code); }
   for (const p of s.students) { ensure(text(p.id, 150) && p.id && !studentIds.has(p.id) && groupIds.has(p.groupCode) && text(p.fullName, 200) && p.fullName.trim() && Number.isFinite(p.position) && [0, 1].includes(p.active), "Поврежден список студентов"); studentIds.add(p.id); }
-  for (const l of s.sessions) { ensure(text(l.id, 150) && l.id && !sessionIds.has(l.id) && groupIds.has(l.groupCode) && isDate(l.date) && Number.isInteger(l.period) && l.period > 0 && l.period < 13 && text(l.kind, 100) && text(l.topic) && text(l.createdAt), "Повреждено занятие"); sessionIds.add(l.id); }
+  for (const l of s.sessions) { ensure(text(l.id, 150) && l.id && !sessionIds.has(l.id) && groupIds.has(l.groupCode) && isDate(l.date) && Number.isInteger(l.period) && l.period > 0 && l.period < 13 && text(l.kind, 100) && text(l.topic) && text(l.createdAt) && (l.completedAt === undefined || (text(l.completedAt) && Number.isFinite(Date.parse(l.completedAt)))), "Повреждено занятие"); sessionIds.add(l.id); }
   const person = (studentId: string, sessionId: string) => s.students.find(p => p.id === studentId)?.groupCode === s.sessions.find(l => l.id === sessionId)?.groupCode && studentIds.has(studentId) && sessionIds.has(sessionId);
   const markKeys = new Set<string>(), answerIds = new Set<string>(), debtIds = new Set<string>();
   for (const m of s.marks) { const k = `${m.studentId}/${m.sessionId}`; ensure(person(m.studentId, m.sessionId) && states.includes(m.status) && text(m.updatedAt) && !markKeys.has(k), "Повреждены отметки посещаемости"); markKeys.add(k); }
@@ -81,7 +85,7 @@ export class JournalStore {
     this.value = next; this.listeners.forEach(l => l());
   };
   recover = () => { const saved = this.storage.getItem(RECOVERY_KEY); ensure(saved, "Предыдущая копия не найдена"); this.import(JSON.parse(saved)); };
-  saveSession(input: Omit<Session, "id" | "createdAt"> & { id?: string }): string {
+  saveSession(input: Pick<Session, "groupCode" | "date" | "period" | "kind" | "topic"> & { id?: string }): string {
     ensure(isDate(input.date) && input.period >= 1 && input.period <= 12, "Проверьте дату и номер пары");
     let result = "";
     this.update(s => {
@@ -89,11 +93,32 @@ export class JournalStore {
       const duplicate = s.sessions.find(l => !l.deletedAt && l.id !== input.id && l.groupCode === input.groupCode && l.date === input.date && l.period === input.period);
       if (duplicate) { if (input.id) throw new Error("На эту дату и пару уже есть занятие"); result = duplicate.id; return; }
       const existing = s.sessions.find(l => l.id === input.id);
-      if (existing) { Object.assign(existing, input); result = existing.id; }
-      else { result = id(); s.sessions.push({ ...input, id: result, createdAt: stamp() }); }
+      const details = { groupCode: input.groupCode, date: input.date, period: input.period, kind: input.kind, topic: input.topic };
+      if (existing) { Object.assign(existing, details); result = existing.id; }
+      else { result = id(); s.sessions.push({ ...details, id: result, createdAt: stamp() }); }
     }); return result;
   }
-  archiveSession(sessionId: string, archived = true) { this.update(s => { const l = s.sessions.find(l => l.id === sessionId); ensure(l, "Занятие не найдено"); l.deletedAt = archived ? stamp() : undefined; }); }
+  completeSession(sessionId: string, completed = true) {
+    ensure(typeof completed === "boolean", "Проверьте статус занятия");
+    this.update(s => {
+      const session = s.sessions.find(l => l.id === sessionId && !l.deletedAt);
+      ensure(session, "Занятие не найдено или удалено");
+      if (completed) session.completedAt ??= stamp();
+      else delete session.completedAt;
+    });
+  }
+  archiveSession(sessionId: string, archived = true) {
+    ensure(typeof archived === "boolean", "Проверьте действие с занятием");
+    this.update(s => {
+      const session = s.sessions.find(l => l.id === sessionId);
+      ensure(session, "Занятие не найдено");
+      if (archived) session.deletedAt ??= stamp();
+      else {
+        ensure(!s.sessions.some(l => l.id !== session.id && !l.deletedAt && l.groupCode === session.groupCode && l.date === session.date && l.period === session.period), "На эту дату и пару уже есть занятие. Измените или удалите его перед восстановлением.");
+        delete session.deletedAt;
+      }
+    });
+  }
   mark(studentId: string, sessionId: string, status: Attendance | null) {
     this.update(s => { this.checkPair(s, studentId, sessionId); ensure(status === null || states.includes(status), "Неверная отметка"); s.marks = s.marks.filter(m => !(m.studentId === studentId && m.sessionId === sessionId)); if (status) s.marks.push({ studentId, sessionId, status, updatedAt: stamp() }); });
   }

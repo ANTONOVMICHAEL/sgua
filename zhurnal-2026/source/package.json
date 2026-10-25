@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "test": "node --experimental-strip-types storage.test.mjs && node --experimental-strip-types rating.test.mjs && node --experimental-strip-types multi-records.test.mjs"
+    "test": "node --experimental-strip-types storage.test.mjs && node --experimental-strip-types rating.test.mjs && node --experimental-strip-types multi-records.test.mjs && node --experimental-strip-types session-lifecycle.test.mjs"
   },
   "dependencies": {
     "lucide-react": "1.31.0",

@@ -1,75 +1,120 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeftRight, ArrowUpRight, BookOpen, Check, ChevronLeft, ChevronRight, UsersRound } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Group, Session, Student } from './storage';
-const count = (n: number, forms: [
-    string,
-    string,
-    string
-]) => { const v = Math.abs(n) % 100; return `${n} ${forms[v > 10 && v < 20 ? 2 : v % 10 === 1 ? 0 : v % 10 >= 2 && v % 10 <= 4 ? 1 : 2]}`; };
+import './group-rotor.css';
+
+const count = (n: number, forms: [string, string, string]) => {
+  const v = Math.abs(n) % 100;
+  return `${n} ${forms[v > 10 && v < 20 ? 2 : v % 10 === 1 ? 0 : v % 10 >= 2 && v % 10 <= 4 ? 1 : 2]}`;
+};
+
+type Gesture = { x: number; y: number; pointerId: number; horizontal: boolean };
+
+/** A manually controlled group deck: its movement never changes journal records. */
 export default function GroupCarousel({ groups, students, sessions, selected, onSelect }: {
-    groups: Group[];
-    students: Student[];
-    sessions: Session[];
-    selected: string;
-    onSelect: (code: string) => void;
+  groups: Group[];
+  students: Student[];
+  sessions: Session[];
+  selected: string;
+  onSelect: (code: string) => void;
 }) {
-    const ref = useRef<HTMLDivElement>(null), callback = useRef(onSelect), selectedRef = useRef(selected), timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined), programmatic = useRef(false), programTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined), gesture = useRef<{
-        x: number;
-        y: number;
-        left: number;
-        dragged: boolean;
-        pointer: number;
-    } | null>(null);
-    const [dragging, setDragging] = useState(false);
-    callback.current = onSelect;
-    selectedRef.current = selected;
-    const index = Math.max(0, groups.findIndex(g => g.code === selected));
-    const cards = () => [...(ref.current?.querySelectorAll<HTMLButtonElement>('[data-group-card]') ?? [])];
-    const align = (i: number, smooth = true) => { const root = ref.current, items = cards(); if (!root || !items[i])
-        return; programmatic.current = true; clearTimeout(programTimer.current); root.scrollTo({ left: items[i].offsetLeft - (items[0]?.offsetLeft ?? 0), behavior: smooth && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' }); programTimer.current = setTimeout(() => { programmatic.current = false; }, 650); };
-    const select = (i: number) => { const safe = Math.max(0, Math.min(groups.length - 1, i)); if (groups[safe]) {
-        programmatic.current = true;
-        callback.current(groups[safe].code);
-        align(safe);
-    } };
-    const settle = () => { const root = ref.current; if (!root || programmatic.current || root.scrollWidth <= root.clientWidth + 2)
-        return; const items = cards(); let closest = 0; for (let i = 1; i < items.length; i++)
-        if (Math.abs(items[i].offsetLeft - items[0].offsetLeft - root.scrollLeft) < Math.abs(items[closest].offsetLeft - items[0].offsetLeft - root.scrollLeft))
-            closest = i; if (groups[closest] && groups[closest].code !== selectedRef.current)
-        callback.current(groups[closest].code); align(closest); };
-    useEffect(() => { align(Math.max(0, groups.findIndex(g => g.code === selected))); }, [selected]);
-    useEffect(() => () => { clearTimeout(timer.current); clearTimeout(programTimer.current); }, []);
-    const finish = (e: React.PointerEvent<HTMLDivElement>) => { const g = gesture.current, root = ref.current; if (!g || !root)
-        return; const dx = e.clientX - g.x; const canScroll = root.scrollWidth > root.clientWidth + 2; if (g.dragged || Math.abs(dx) > 40) {
-        if (!canScroll)
-            select(index + (dx < 0 ? 1 : -1));
-        else {
-            programmatic.current = false;
-            clearTimeout(timer.current);
-            timer.current = setTimeout(settle, 180);
+  const frame = useRef<HTMLDivElement>(null);
+  const cards = useRef<(HTMLButtonElement | null)[]>([]);
+  const gesture = useRef<Gesture | null>(null);
+  const suppressClick = useRef(false);
+  const wheel = useRef({ distance: 0, at: 0 });
+  const [width, setWidth] = useState(900);
+  const [drag, setDrag] = useState(0);
+  const index = Math.max(0, groups.findIndex(g => g.code === selected));
+  const cardWidth = Math.min(342, Math.max(226, width * .72));
+  const step = Math.max(1, Math.min(cardWidth * .94, width * .61));
+
+  useEffect(() => {
+    if (!frame.current) return;
+    const root = frame.current;
+    const update = () => setWidth(root.clientWidth);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  const select = (next: number, focus = false) => {
+    if (!groups.length) return;
+    const safe = (next % groups.length + groups.length) % groups.length;
+    onSelect(groups[safe].code);
+    if (focus) cards.current[safe]?.focus({ preventScroll: true });
+  };
+  const relative = (i: number) => {
+    let distance = i - index;
+    if (distance > groups.length / 2) distance -= groups.length;
+    if (distance < -groups.length / 2) distance += groups.length;
+    return distance;
+  };
+  const release = (e: React.PointerEvent<HTMLDivElement>, cancelled = false) => {
+    const current = gesture.current;
+    if (!current || current.pointerId !== e.pointerId) return;
+    const dx = e.clientX - current.x;
+    if (current.horizontal) {
+      suppressClick.current = true;
+      if (!cancelled && Math.abs(dx) > Math.min(65, cardWidth * .2)) select(index + (dx < 0 ? 1 : -1));
+    }
+    gesture.current = null;
+    setDrag(0);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+  if (!groups.length) return null;
+
+  return <section className="group-browser group-rotor" aria-label="Учебные группы">
+    <div className="rotor-heading"><span>Учебные группы</span><div className="rotor-navigation"><span>{String(index + 1).padStart(2, '0')}<i>/</i>{String(groups.length).padStart(2, '0')}</span><button type="button" aria-label="Предыдущая группа" disabled={groups.length < 2} onClick={() => select(index - 1)}><ChevronLeft size={17}/></button><button type="button" aria-label="Следующая группа" disabled={groups.length < 2} onClick={() => select(index + 1)}><ChevronRight size={17}/></button></div></div>
+    <div ref={frame} className={`rotor-stage ${drag ? 'is-dragging' : ''}`} role="tablist" aria-label="Переключение учебных групп"
+      onPointerDown={e => {
+        if (e.button !== 0 || groups.length < 2) return;
+        suppressClick.current = false;
+        gesture.current = { x: e.clientX, y: e.clientY, pointerId: e.pointerId, horizontal: false };
+      }}
+      onPointerMove={e => {
+        const current = gesture.current;
+        if (!current || current.pointerId !== e.pointerId) return;
+        const dx = e.clientX - current.x, dy = e.clientY - current.y;
+        if (!current.horizontal && Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { gesture.current = null; return; }
+        if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy)) {
+          current.horizontal = true;
+          if (!e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.setPointerCapture(e.pointerId);
         }
-    } setDragging(false); if (root.hasPointerCapture(e.pointerId))
-        root.releasePointerCapture(e.pointerId); };
-    return <div className="group-browser"><div className="group-browser-heading"><span>Группы</span><div><button type="button" aria-label="Предыдущая группа" disabled={index === 0} onClick={() => select(index - 1)}><ChevronLeft size={16}/></button><button type="button" aria-label="Следующая группа" disabled={index === groups.length - 1} onClick={() => select(index + 1)}><ChevronRight size={16}/></button></div></div><div ref={ref} className={`group-carousel ${dragging ? 'dragging' : ''}`} role="tablist" aria-label="Переключение учебных групп" onScroll={() => { if (!programmatic.current) {
-        clearTimeout(timer.current);
-        timer.current = setTimeout(settle, 180);
-    } }} onWheel={e => { if (Math.abs(e.deltaX) > 2 || e.shiftKey)
-        programmatic.current = false; }} onPointerDown={e => { if (e.button !== 0)
-        return; clearTimeout(timer.current); clearTimeout(programTimer.current); programmatic.current = false; gesture.current = { x: e.clientX, y: e.clientY, left: e.currentTarget.scrollLeft, dragged: false, pointer: e.pointerId }; }} onPointerMove={e => { const g = gesture.current; if (!g || e.buttons !== 1 || e.pointerType === 'touch')
-        return; const dx = e.clientX - g.x; if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(e.clientY - g.y)) {
-        g.dragged = true;
-        setDragging(true);
-        if (!e.currentTarget.hasPointerCapture(e.pointerId))
-            e.currentTarget.setPointerCapture(e.pointerId);
-        e.currentTarget.scrollLeft = g.left - dx;
-    } }} onPointerUp={finish} onPointerCancel={() => { gesture.current = null; setDragging(false); }} onClickCapture={e => { if (gesture.current?.dragged && e.detail !== 0) {
+        if (current.horizontal) setDrag(Math.max(-step * .92, Math.min(step * .92, dx)));
+      }}
+      onPointerUp={e => release(e)} onPointerCancel={e => release(e, true)}
+      onClickCapture={e => { if (suppressClick.current && e.detail !== 0) { e.preventDefault(); e.stopPropagation(); suppressClick.current = false; } }}
+      onKeyDown={e => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
         e.preventDefault();
-        e.stopPropagation();
-        gesture.current = null;
-    } }} onKeyDown={e => { if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
-        e.preventDefault();
-        const next = e.key === 'Home' ? 0 : e.key === 'End' ? groups.length - 1 : index + (e.key === 'ArrowRight' ? 1 : -1);
-        select(next);
-        cards()[Math.max(0, Math.min(groups.length - 1, next))]?.focus({ preventScroll: true });
-    } }}>{groups.map((g, i) => { const people = students.filter(p => p.active && p.groupCode === g.code), lessons = sessions.filter(l => l.groupCode === g.code && !l.deletedAt); return <button type="button" key={g.code} data-group-card role="tab" aria-selected={selected === g.code} tabIndex={selected === g.code ? 0 : -1} aria-controls="workspace" className={`group-card ${selected === g.code ? 'selected' : ''}`} onClick={() => select(i)}><span className="group-tab-index">{String(i+1).padStart(2,"0")}</span><strong>{g.code}</strong><span className="group-card-bottom"><span>{count(people.length, ["студент", "студента", "студентов"])}</span><span>{count(lessons.length, ["занятие", "занятия", "занятий"])}</span></span></button>; })}</div><span className="sr-only" role="status">Выбрана группа {selected}</span></div>;
+        select(e.key === 'Home' ? 0 : e.key === 'End' ? groups.length - 1 : index + (e.key === 'ArrowRight' ? 1 : -1), true);
+      }}
+      onWheel={e => {
+        const delta = e.shiftKey ? e.deltaY : e.deltaX;
+        if (groups.length < 2 || Math.abs(delta) < 2 || (!e.shiftKey && Math.abs(e.deltaY) > Math.abs(e.deltaX))) return;
+        const now = Date.now();
+        if (now - wheel.current.at < 450) return;
+        wheel.current.distance += delta;
+        if (Math.abs(wheel.current.distance) > 65) { select(index + (wheel.current.distance > 0 ? 1 : -1)); wheel.current = { distance: 0, at: now }; }
+      }}>
+      {groups.map((g, i) => {
+        const offset = relative(i), position = offset + drag / step;
+        const people = students.filter(p => p.active && p.groupCode === g.code).length;
+        const lessons = sessions.filter(l => l.groupCode === g.code && !l.deletedAt);
+        const completed = lessons.filter(l => l.completedAt).length;
+        const isSelected = i === index;
+        const visible = Math.abs(offset) <= 1 || (drag !== 0 && Math.abs(position) < 1.8);
+        const style = { width: cardWidth, '--rotor-x': `${offset * step + drag}px`, '--rotor-turn': `${Math.max(-32, Math.min(32, -position * 27))}deg`, '--rotor-depth': `${-Math.abs(position) * 65}px`, '--rotor-scale': Math.max(.8, 1 - Math.abs(position) * .08), zIndex: Math.round(20 - Math.abs(position) * 4) } as React.CSSProperties;
+        return <button ref={el => { cards.current[i] = el; }} key={g.code} type="button" data-group-card role="tab" aria-selected={isSelected} aria-hidden={!visible} tabIndex={isSelected ? 0 : -1} aria-controls="workspace" aria-label={`${g.code}, ${count(people, ['студент','студента','студентов'])}, завершено ${completed} из ${lessons.length} занятий`} className={`rotor-card ${isSelected ? 'selected' : ''} ${visible ? '' : 'outside'}`} style={style} onClick={() => select(i)}>
+          <span className="rotor-card-top"><span>Учебная группа</span><span>{String(i + 1).padStart(2, '0')}</span></span>
+          <strong>{g.code}</strong>
+          <span className="rotor-card-bottom"><span>{count(people, ['студент','студента','студентов'])}</span><span><b>{completed}</b><i>/</i>{lessons.length} завершено</span></span>
+        </button>;
+      })}
+    </div>
+    <div className="rotor-footer"><span>Выбрана группа {groups[index].code}</span><div className="rotor-dots" role="group" aria-label="Быстрый выбор группы">{groups.map((g,i) => <button type="button" key={g.code} aria-label={`Выбрать группу ${g.code}`} aria-pressed={i === index} className={i === index ? 'selected' : ''} onClick={() => select(i)}/>)}</div><span className="rotor-hint">Листай или перетаскивай</span></div>
+    <span className="sr-only" role="status">Выбрана группа {groups[index].code}</span>
+  </section>;
 }

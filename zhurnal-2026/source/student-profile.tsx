@@ -1,6 +1,6 @@
 import React, { useId, useMemo, useState } from 'react';
 import { Check, Pencil, Plus } from 'lucide-react';
-import { DEFAULT_RATING_SETTINGS } from './storage';
+import { DEFAULT_RATING_SETTINGS, isVisibleDebt } from './storage';
 import type { Attendance, Debt, Session, State, Student } from './storage';
 import { buildRanking } from './rating';
 
@@ -37,7 +37,7 @@ export default function StudentProfile({ state, student, sessions, onEditStudent
   const pastIds = new Set(lessons.filter(lesson => lesson.date <= throughDate).map(lesson => lesson.id));
   const answers = state.answers.filter(answer => answer.studentId === student.id && pastIds.has(answer.sessionId));
   const marks = state.marks.filter(mark => mark.studentId === student.id && pastIds.has(mark.sessionId));
-  const debts = state.debts.filter(debt => debt.studentId === student.id).sort((a, b) => (a.status === 'open' ? 0 : 1) - (b.status === 'open' ? 0 : 1) || (a.dueDate || '9999').localeCompare(b.dueDate || '9999') || b.createdAt.localeCompare(a.createdAt));
+  const debts = state.debts.filter(debt => debt.studentId === student.id && isVisibleDebt(state,debt)).sort((a, b) => (a.status === 'open' ? 0 : 1) - (b.status === 'open' ? 0 : 1) || (a.dueDate || '9999').localeCompare(b.dueDate || '9999') || b.createdAt.localeCompare(a.createdAt));
   const openDebts = debts.filter(debt => debt.status === 'open');
   const present = marks.filter(mark => mark.status === 'present' || mark.status === 'late').length;
   const denominator = marks.filter(mark => mark.status !== 'excused').length;
@@ -87,7 +87,7 @@ export default function StudentProfile({ state, student, sessions, onEditStudent
             const lessonDebts = debts.filter(value => value.sessionId === lesson.id && value.status === 'open');
             return <button type="button" className="dossier-lesson" key={lesson.id} onClick={() => onRecords(lesson, 'answers')} aria-label={`${formatDate(day)}, ${lesson.period}-я пара: открыть записи студента`}>
               <span className={`dossier-attendance ${mark?.status ?? 'unmarked'}`} title={mark ? attendance[mark.status].label : 'Не отмечен'}>{mark ? attendance[mark.status].letter : '—'}</span>
-              <span className="dossier-lesson-copy"><strong>{lesson.topic || lesson.kind}</strong><small>{lesson.period}-я пара · {lesson.kind}{lesson.date > throughDate ? ' · Будущее занятие' : ''}</small>
+              <span className="dossier-lesson-copy"><strong>{lesson.topic || lesson.kind}</strong><small>{lesson.period}-я пара · {lesson.kind}{lesson.completedAt?' · Завершено':' · Открыто'}{lesson.date > throughDate ? ' · Будущее занятие' : ''}</small>
                 <span className="dossier-lesson-state">{mark ? attendance[mark.status].label : 'Посещаемость не отмечена'}{lessonDebts.length > 0 && <em>{lessonDebts.length} {unit(lessonDebts.length, ['долг', 'долга', 'долгов'])}</em>}</span>
                 {lessonAnswers.some(answer => answer.note) && <span className="dossier-answer-notes">{lessonAnswers.filter(answer => answer.note).map(answer => <span key={answer.id}>{answer.note}</span>)}</span>}
               </span>
@@ -108,6 +108,6 @@ export default function StudentProfile({ state, student, sessions, onEditStudent
         })}</div> : <div className="dossier-empty dossier-empty-debt"><span className="dossier-empty-rule"/><h3>{debtScope === 'open' ? 'Открытых долгов нет' : 'Задолженностей нет'}</h3><p>{debtScope === 'open' && debts.length ? 'Все внесенные работы погашены.' : 'Задания и сроки можно добавить отдельно для каждой работы.'}</p></div>}
       </>}
     </div>
-    <div className="dossier-footnote">Показатели по проведенным занятиям на {formatDate(throughDate)} Незакрытые задолженности — за всю историю.</div>
+    <div className="dossier-footnote">Показатели по сохраненным записям на {formatDate(throughDate)} Незакрытые задолженности — за всю историю.</div>
   </div>;
 }
