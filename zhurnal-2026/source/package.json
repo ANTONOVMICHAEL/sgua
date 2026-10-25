@@ -1,12 +1,12 @@
 {
   "name": "sgua-journal",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "test": "node --experimental-strip-types storage.test.mjs && node --experimental-strip-types rating.test.mjs"
+    "test": "node --experimental-strip-types storage.test.mjs && node --experimental-strip-types rating.test.mjs && node --experimental-strip-types multi-records.test.mjs"
   },
   "dependencies": {
     "lucide-react": "1.31.0",

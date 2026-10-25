@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Building2 } from 'lucide-react';
 
 type CampusId = '1' | '5';
 const preferenceKey = 'journal-campus';
@@ -21,13 +20,10 @@ export default function CampusCover({ recorded, children }: { recorded: boolean;
     try { localStorage.setItem(preferenceKey, id); } catch { /* A visual preference must not block the journal. */ }
   };
   return <div className="academy-cover">
-    <div className="campus-selector-bar">
-      <span className="campus-selector-label"><Building2 size={14}/><span>Корпуса академии</span></span>
-      <div className="campus-selector" role="group" aria-label="Корпус на обложке">
-        {(['1', '5'] as const).map(id => <button key={id} type="button" className={id === selected ? 'selected' : ''} aria-pressed={id === selected} onClick={() => select(id)}><i/>Корпус {id}</button>)}
-      </div>
-    </div>
     <section className={`academy-stage campus-${selected} ${recorded ? 'stage-recorded' : 'stage-first'}`} aria-label="Обзор учебной группы">
+      <div className="campus-selector" role="group" aria-label="Корпус на обложке">
+        {(['1', '5'] as const).map(id => <button key={id} type="button" className={id === selected ? 'selected' : ''} aria-pressed={id === selected} onClick={() => select(id)}>Корпус {id}</button>)}
+      </div>
       <img key={selected} className="campus-scene" src={campus.src} alt="" width="1536" height="1024" fetchPriority="high"/>
       <div className="stage-wash"/>
       {children}
