@@ -27,7 +27,7 @@ export default function ActivityChart({ entries }: { entries: Entry[] }) {
   if (!entries.length) return <div className="activity-interactive-empty"><span className="chart-empty-rule" aria-hidden="true"/><strong>Пока нет занятий</strong><p>После первой пары здесь появится<br/>история посещений и ответов.</p></div>;
 
   return <div className="activity-interactive" role="group" aria-label="График посещений и ответов">
-    <div className="chart-series-controls" role="group" aria-label="Показатели графика">{series.map(s => <button type="button" key={s.key} className={`chart-series-control series-${s.key}`} aria-pressed={visible[s.key]} onClick={() => toggle(s.key)}><i/>{s.label}</button>)}</div>
+    <div className="chart-series-controls" role="group" aria-label="Показатели графика">{series.map(s => <button type="button" key={s.key} className={`chart-series-control series-${s.key}`} aria-pressed={visible[s.key]} onClick={() => toggle(s.key)}><i aria-hidden="true"/>{s.label}</button>)}</div>
     <div className="chart-selected-entry" aria-live="polite" aria-atomic="true">
       <div className="chart-selected-date"><strong>{dateLabel(active.lesson.date)}</strong><span>{active.lesson.period}-я пара · {active.lesson.groupCode}</span></div>
       <div className={`chart-selected-metric visits ${visible.visits ? '' : 'series-muted'}`}><small>Посещения</small><strong>{active.visits}</strong></div>
@@ -51,6 +51,6 @@ export default function ActivityChart({ entries }: { entries: Entry[] }) {
         </div>
       </div>
     </div>
-    <div className="chart-selection-hint">Выбери занятие на графике<span aria-hidden="true">← →</span></div>
+    <div className="chart-selection-hint"><span className="chart-touch-hint">Коснись столбца, чтобы посмотреть занятие</span><span className="chart-desktop-hint">Выбери занятие на графике</span><span className="chart-key-hint" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd></span></div>
   </div>;
 }

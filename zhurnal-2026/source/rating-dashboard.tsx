@@ -47,7 +47,7 @@ export default function RatingDashboard({ state, groupCode, throughDate, onStude
         return b.answers - a.answers; if (sort === 'grade')
         return (b.averageGrade ?? -1) - (a.averageGrade ?? -1); return a.openDebts - b.openDebts || (a.rank ?? 1e9) - (b.rank ?? 1e9); });
     const exportCsv = () => { const rows = [['Место', 'Студент', 'Группа', 'Баллы', 'Посещений', 'Посещаемость по отметкам, %', 'Ответов', 'Средняя оценка', 'Открытых долгов', 'Баллы за посещения', 'Баллы за ответы', 'Вычет за долги'], ...ranking.map(r => [r.rank ?? '', r.student.fullName, r.student.groupCode, r.score ?? '', r.present, r.attendanceRate ?? '', r.answers, r.averageGrade === null ? '' : number(r.averageGrade, 2), r.openDebts, r.attendancePoints, r.answerPoints, r.debtPenalty])]; const url = URL.createObjectURL(new Blob(['\uFEFF' + rows.map(r => r.map(csvCell).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' })); const a = document.createElement('a'); a.href = url; a.download = `Рейтинг_${scope === 'all' ? 'все_группы' : groupCode}_${throughDate}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
-    return <section className="rating-dashboard rating-v12">
+    return <section className="rating-dashboard rating-v12 rating-v15">
       <div className="rating-topline">
         <div className="rating-scope" role="group" aria-label="Охват рейтинга">
           <button aria-pressed={scope === 'group'} className={scope === 'group' ? 'selected' : ''} onClick={() => setScope('group')}>{groupCode}</button>
@@ -63,7 +63,7 @@ export default function RatingDashboard({ state, groupCode, throughDate, onStude
           <div className="rating-leader-main">
             <div className="rating-leader-copy">{leader ? <>
               <button onClick={() => onStudent(leader.student)}><h3>{leader.student.fullName.split(' ')[0]}<span>{leader.student.fullName.split(' ').slice(1).join(' ')}</span></h3></button>
-              <p>{tied > 1 ? `${tied} студентов с равным результатом` : leader.student.groupCode}</p>
+              <p>{tied > 1 ? `${tied} студентов с равным результатом` : leader.student.groupCode}</p><button className="leader-profile-link" onClick={() => onStudent(leader.student)}>Открыть профиль</button>
             </> : <><h3>Пока нет<br/>результатов</h3><p>Отметь посещение или ответ,<br/>чтобы увидеть первые результаты.</p></>}</div>
             <div className="rating-leader-score"><strong>{leader ? number(leader.score) : '—'}</strong><span>{leader ? unit(leader.score ?? 0, ['балл активности', 'балла активности', 'баллов активности']) : 'пока без результата'}</span></div>
           </div>
@@ -80,7 +80,7 @@ export default function RatingDashboard({ state, groupCode, throughDate, onStude
           <div><span>Открытых долгов</span><strong>{openTotal}</strong><small className="total-note">До погашения</small></div>
         </section>
         <aside className="rating-podium">
-          <div className="rating-feature-top"><span>Первые три места</span><small>Равные баллы — равное место</small></div>
+          <div className="rating-feature-top"><span>Лидеры рейтинга</span><small>Равные баллы — равное место</small></div>
           {ranked.length ? <div className="podium-list">{ranked.slice(0, 3).map((r, i) => <button key={r.student.id} onClick={() => onStudent(r.student)} className={`podium-person podium-${i + 1}`}><span className="podium-position">{String(r.rank).padStart(2, '0')}</span><span className="podium-name"><strong>{r.student.fullName.split(' ')[0]}</strong><small>{r.student.fullName.split(' ').slice(1).join(' ')}</small></span><span className="podium-score">{number(r.score)}<small>{unit(r.score ?? 0, ['балл', 'балла', 'баллов'])}</small></span></button>)}</div> : <p className="podium-empty-v12">Первая отметка откроет рейтинг.<br/>Места рассчитываются автоматически.</p>}
         </aside>
       </div>

@@ -5,6 +5,7 @@ import { STORAGE_KEY, validateState } from "./storage";
 import "./atelier.css";
 import "./atelier-responsive.css";
 import "./edition.css";
+import "./finish.css";
 const root = createRoot(document.getElementById("root")!);
 try {
   root.render(<CloudApplication />);

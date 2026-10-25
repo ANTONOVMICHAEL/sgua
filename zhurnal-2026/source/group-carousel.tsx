@@ -8,7 +8,7 @@ const count = (n: number, forms: [string, string, string]) => {
   return `${n} ${forms[v > 10 && v < 20 ? 2 : v % 10 === 1 ? 0 : v % 10 >= 2 && v % 10 <= 4 ? 1 : 2]}`;
 };
 
-type Gesture = { x: number; y: number; pointerId: number; horizontal: boolean };
+type Gesture = { x: number; y: number; pointerId: number; horizontal: boolean; startedAt: number };
 
 /** A manually controlled group deck: its movement never changes journal records. */
 export default function GroupCarousel({ groups, students, sessions, selected, onSelect }: {
@@ -57,7 +57,8 @@ export default function GroupCarousel({ groups, students, sessions, selected, on
     const dx = e.clientX - current.x;
     if (current.horizontal) {
       suppressClick.current = true;
-      if (!cancelled && Math.abs(dx) > Math.min(65, cardWidth * .2)) select(index + (dx < 0 ? 1 : -1));
+      const fastSwipe = performance.now() - current.startedAt < 260 && Math.abs(dx) > 26;
+      if (!cancelled && (Math.abs(dx) > Math.min(65, cardWidth * .2) || fastSwipe)) select(index + (dx < 0 ? 1 : -1));
     }
     gesture.current = null;
     setDrag(0);
@@ -71,7 +72,7 @@ export default function GroupCarousel({ groups, students, sessions, selected, on
       onPointerDown={e => {
         if (e.button !== 0 || groups.length < 2) return;
         suppressClick.current = false;
-        gesture.current = { x: e.clientX, y: e.clientY, pointerId: e.pointerId, horizontal: false };
+        gesture.current = { x: e.clientX, y: e.clientY, pointerId: e.pointerId, horizontal: false, startedAt: performance.now() };
       }}
       onPointerMove={e => {
         const current = gesture.current;
@@ -106,15 +107,17 @@ export default function GroupCarousel({ groups, students, sessions, selected, on
         const completed = lessons.filter(l => l.completedAt).length;
         const isSelected = i === index;
         const visible = Math.abs(offset) <= 1 || (drag !== 0 && Math.abs(position) < 1.8);
-        const style = { width: cardWidth, '--rotor-x': `${offset * step + drag}px`, '--rotor-turn': `${Math.max(-32, Math.min(32, -position * 27))}deg`, '--rotor-depth': `${-Math.abs(position) * 65}px`, '--rotor-scale': Math.max(.8, 1 - Math.abs(position) * .08), zIndex: Math.round(20 - Math.abs(position) * 4) } as React.CSSProperties;
+        const progress = lessons.length ? completed / lessons.length : 0;
+        const style = { width: cardWidth, '--rotor-progress': progress, '--rotor-x': `${offset * step + drag}px`, '--rotor-turn': `${Math.max(-32, Math.min(32, -position * 27))}deg`, '--rotor-depth': `${-Math.abs(position) * 65}px`, '--rotor-scale': Math.max(.8, 1 - Math.abs(position) * .08), zIndex: Math.round(20 - Math.abs(position) * 4) } as React.CSSProperties;
         return <button ref={el => { cards.current[i] = el; }} key={g.code} type="button" data-group-card role="tab" aria-selected={isSelected} aria-hidden={!visible} tabIndex={isSelected ? 0 : -1} aria-controls="workspace" aria-label={`${g.code}, ${count(people, ['студент','студента','студентов'])}, завершено ${completed} из ${lessons.length} занятий`} className={`rotor-card ${isSelected ? 'selected' : ''} ${visible ? '' : 'outside'}`} style={style} onClick={() => select(i)}>
-          <span className="rotor-card-top"><span>Учебная группа</span><span>{String(i + 1).padStart(2, '0')}</span></span>
+          <span className="rotor-card-top"><span>{g.institute || 'Учебная группа'}</span><span>{String(i + 1).padStart(2, '0')}</span></span>
           <strong>{g.code}</strong>
-          <span className="rotor-card-bottom"><span>{count(people, ['студент','студента','студентов'])}</span><span><b>{completed}</b><i>/</i>{lessons.length} завершено</span></span>
+          <span className="rotor-card-bottom"><span>{count(people, ['студент','студента','студентов'])}</span><span><b>{completed}</b><i>/</i>{lessons.length}<small>завершено</small></span></span>
+          <span className="rotor-card-progress" aria-hidden="true"><i/></span>
         </button>;
       })}
     </div>
-    <div className="rotor-footer"><span>Выбрана группа {groups[index].code}</span><div className="rotor-dots" role="group" aria-label="Быстрый выбор группы">{groups.map((g,i) => <button type="button" key={g.code} aria-label={`Выбрать группу ${g.code}`} aria-pressed={i === index} className={i === index ? 'selected' : ''} onClick={() => select(i)}/>)}</div><span className="rotor-hint">Листай или перетаскивай</span></div>
+    <div className="rotor-footer"><span>Выбрана группа {groups[index].code}</span><div className="rotor-dots" role="group" aria-label="Быстрый выбор группы">{groups.map((g,i) => <button type="button" key={g.code} aria-label={`Выбрать группу ${g.code}`} aria-pressed={i === index} className={i === index ? 'selected' : ''} onClick={() => select(i)}/>)}</div><span className="rotor-hint">Листай группы</span></div>
     <span className="sr-only" role="status">Выбрана группа {groups[index].code}</span>
   </section>;
 }
