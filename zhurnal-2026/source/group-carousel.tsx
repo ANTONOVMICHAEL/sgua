@@ -68,7 +68,7 @@ export default function GroupCarousel({ groups, students, sessions, selected, on
 
   return <section className="group-browser group-rotor" aria-label="Учебные группы">
     <div className="rotor-heading"><span>Учебные группы</span><div className="rotor-navigation"><span>{String(index + 1).padStart(2, '0')}<i>/</i>{String(groups.length).padStart(2, '0')}</span><button type="button" aria-label="Предыдущая группа" disabled={groups.length < 2} onClick={() => select(index - 1)}><ChevronLeft size={17}/></button><button type="button" aria-label="Следующая группа" disabled={groups.length < 2} onClick={() => select(index + 1)}><ChevronRight size={17}/></button></div></div>
-    <div ref={frame} className={`rotor-stage ${drag ? 'is-dragging' : ''}`} role="tablist" aria-label="Переключение учебных групп"
+    <div ref={frame} className={`rotor-stage ${drag ? 'is-dragging' : ''}`} role="group" aria-label="Переключение учебных групп"
       onPointerDown={e => {
         if (e.button !== 0 || groups.length < 2) return;
         suppressClick.current = false;
@@ -109,7 +109,7 @@ export default function GroupCarousel({ groups, students, sessions, selected, on
         const visible = Math.abs(offset) <= 1 || (drag !== 0 && Math.abs(position) < 1.8);
         const progress = lessons.length ? completed / lessons.length : 0;
         const style = { width: cardWidth, '--rotor-progress': progress, '--rotor-x': `${offset * step + drag}px`, '--rotor-turn': `${Math.max(-32, Math.min(32, -position * 27))}deg`, '--rotor-depth': `${-Math.abs(position) * 65}px`, '--rotor-scale': Math.max(.8, 1 - Math.abs(position) * .08), zIndex: Math.round(20 - Math.abs(position) * 4) } as React.CSSProperties;
-        return <button ref={el => { cards.current[i] = el; }} key={g.code} type="button" data-group-card role="tab" aria-selected={isSelected} aria-hidden={!visible} tabIndex={isSelected ? 0 : -1} aria-controls="workspace" aria-label={`${g.code}, ${count(people, ['студент','студента','студентов'])}, завершено ${completed} из ${lessons.length} занятий`} className={`rotor-card ${isSelected ? 'selected' : ''} ${visible ? '' : 'outside'}`} style={style} onClick={() => select(i)}>
+        return <button ref={el => { cards.current[i] = el; }} key={g.code} type="button" data-group-card aria-pressed={isSelected} aria-hidden={!visible} tabIndex={isSelected ? 0 : -1} aria-controls="dashboard" aria-label={`${g.code}, ${count(people, ['студент','студента','студентов'])}, завершено ${completed} из ${lessons.length} занятий`} className={`rotor-card ${isSelected ? 'selected' : ''} ${visible ? '' : 'outside'}`} style={style} onClick={() => select(i)}>
           <span className="rotor-card-top"><span>{g.institute || 'Учебная группа'}</span><span>{String(i + 1).padStart(2, '0')}</span></span>
           <strong>{g.code}</strong>
           <span className="rotor-card-bottom"><span>{count(people, ['студент','студента','студентов'])}</span><span><b>{completed}</b><i>/</i>{lessons.length}<small>завершено</small></span></span>
