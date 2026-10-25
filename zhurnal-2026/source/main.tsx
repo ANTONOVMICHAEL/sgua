@@ -5,6 +5,7 @@ import { JournalStore, STORAGE_KEY, validateState } from "./storage";
 import { rosters } from "./rosters";
 import "./atelier.css";
 import "./atelier-responsive.css";
+import "./signature.css";
 const root = createRoot(document.getElementById("root")!);
 try {
   const store = new JournalStore(localStorage, rosters);

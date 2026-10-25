@@ -20,7 +20,7 @@ export default function CampusCover({ recorded, children }: { recorded: boolean;
     try { localStorage.setItem(preferenceKey, id); } catch { /* A visual preference must not block the journal. */ }
   };
   return <div className="academy-cover">
-    <section className={`academy-stage campus-${selected} ${recorded ? 'stage-recorded' : 'stage-first'}`} aria-label="Обзор учебной группы">
+    <section className={`academy-stage campus-${selected} ${recorded ? 'stage-recorded' : 'stage-first'}`} aria-label="Обзор учебной группы" onPointerMove={e=>{if(e.pointerType!=="mouse"||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--scene-x',`${((e.clientX-r.left)/r.width-.5)*8}px`);e.currentTarget.style.setProperty('--scene-y',`${((e.clientY-r.top)/r.height-.5)*5}px`);}} onPointerLeave={e=>{e.currentTarget.style.setProperty('--scene-x','0px');e.currentTarget.style.setProperty('--scene-y','0px');}}>
       <div className="campus-selector" role="group" aria-label="Корпус на обложке">
         {(['1', '5'] as const).map(id => <button key={id} type="button" className={id === selected ? 'selected' : ''} aria-pressed={id === selected} onClick={() => select(id)}>Корпус {id}</button>)}
       </div>
