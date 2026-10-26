@@ -9,7 +9,7 @@ import GroupCarousel from './group-carousel';
 const unit=(n:number,a:[string,string,string])=>a[n%100>10&&n%100<20?2:n%10===1?0:n%10>=2&&n%10<=4?1:2];
 const date=(v:string)=>new Date(v+'T12:00:00Z').toLocaleDateString('ru',{day:'numeric',month:'long',timeZone:'UTC'});
 
-export default function AcademicDashboard({state,groupCode,throughDate,onGroup,onLesson,onNew,onStudent,onRating,onDebts}:{state:State;groupCode:string;throughDate:string;onGroup:(code:string)=>void;onLesson:(s:Session)=>void;onNew:()=>void;onStudent:(s:Student)=>void;onRating:()=>void;onDebts:()=>void}){
+export default function AcademicDashboard({state,groupCode,throughDate,onGroup,onLesson,onNew,onStudent,onRating,onDebts,onStudents}:{state:State;groupCode:string;throughDate:string;onGroup:(code:string)=>void;onLesson:(s:Session)=>void;onNew:()=>void;onStudent:(s:Student)=>void;onRating:()=>void;onDebts:()=>void;onStudents:()=>void}){
  const group=state.groups.find(g=>g.code===groupCode)!;
  const students=state.students.filter(s=>s.groupCode===groupCode&&s.active);
  const sessions=state.sessions.filter(s=>s.groupCode===groupCode&&!s.deletedAt).sort((a,b)=>b.date.localeCompare(a.date)||b.period-a.period);
@@ -23,7 +23,7 @@ export default function AcademicDashboard({state,groupCode,throughDate,onGroup,o
    <CampusCover recorded={false}>
     <div className="campus-board-heading"><span>Саратовская государственная юридическая академия</span><h2>{group.institute}</h2></div>
     
-    <div className="campus-attendance"><div><span>Последнее занятие</span>{latest?<button onClick={()=>onLesson(latest)}>{date(latest.date)}<small>{latest.period}-я пара</small><ArrowUpRight size={14}/></button>:<strong>Занятий пока нет</strong>}</div><div className="campus-attendance-dots" aria-label={latest?`${marks.length} из ${students.length} отмечено`:'Занятий пока нет'}>{students.map(s=>{const status=marks.find(m=>m.studentId===s.id)?.status;return <span key={s.id} className={status||'unmarked'} title={`${s.fullName}: ${status?({present:'Присутствует',absent:'Отсутствует',late:'Опоздал',excused:'Уважительная причина'}[status]):'Не отмечен'}`}/>;})}</div><small>{latest?`${marks.length} из ${students.length} отмечено`:'Посещаемость появится после первого занятия'}</small></div>
+
     <div className="campus-data-strip">
      <div><span>Проведено</span><strong>{completed}<small> / {sessions.length}</small></strong><p>{sessions.length-completed} {unit(sessions.length-completed,['занятие открыто','занятия открыто','занятий открыто'])}</p></div>
      <button onClick={onRating}><span>Ответы</span><strong>{answers.length}</strong><p>За все занятия <ArrowUpRight size={12}/></p></button>
@@ -32,7 +32,8 @@ export default function AcademicDashboard({state,groupCode,throughDate,onGroup,o
    </CampusCover>
    <aside className="group-console">
     <GroupCarousel groups={state.groups} students={state.students} sessions={state.sessions} selected={groupCode} onSelect={onGroup}/>
-    <div className="group-console-roster"><div><span className="group-console-avatars">{students.slice(0,4).map((s,i)=><i key={s.id} style={{zIndex:4-i}}>{s.fullName.split(' ').slice(0,2).map(x=>x[0]).join('')}</i>)}</span><span><strong>{students.length} {unit(students.length,['студент','студента','студентов'])}</strong><small>В составе группы</small></span></div><button onClick={onRating} aria-label="Рейтинг выбранной группы"><ArrowUpRight size={17}/></button></div>
+    <div className="campus-attendance"><div><span>Последнее занятие</span>{latest?<button onClick={()=>onLesson(latest)}>{date(latest.date)}<small>{latest.period}-я пара</small><ArrowUpRight size={14}/></button>:<strong>Занятий пока нет</strong>}</div><div className="campus-attendance-dots" aria-label={latest?`${marks.length} из ${students.length} отмечено`:'Занятий пока нет'}>{students.map(s=>{const status=marks.find(m=>m.studentId===s.id)?.status;return <span key={s.id} className={status||'unmarked'} title={`${s.fullName}: ${status?({present:'Присутствует',absent:'Отсутствует',late:'Опоздал',excused:'Уважительная причина'}[status]):'Не отмечен'}`}/>;})}</div><small>{latest?`${marks.length} из ${students.length} отмечено`:'Посещаемость появится после первого занятия'}</small></div>
+    <div className="group-console-roster"><div><span className="group-console-avatars">{students.slice(0,4).map((s,i)=><i key={s.id} style={{zIndex:4-i}}>{s.fullName.split(' ').slice(0,2).map(x=>x[0]).join('')}</i>)}</span><span><strong>{students.length} {unit(students.length,['студент','студента','студентов'])}</strong><small>В составе группы</small></span></div><button onClick={onStudents} aria-label="Открыть состав группы"><ArrowUpRight size={17}/></button></div>
     <button className="group-console-open" onClick={()=>latest?onLesson(latest):onNew()}><span>{latest?"Открыть последнее занятие":"Создать первое занятие"}</span><ArrowUpRight size={16}/></button>
    </aside>
   </div>

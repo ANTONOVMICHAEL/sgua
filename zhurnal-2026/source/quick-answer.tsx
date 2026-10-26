@@ -1,16 +1,32 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useId, useRef, useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import type { Answer, Grade, JournalStore, Session, Student } from './storage';
 
 export default function QuickAnswer({student,session,answers,store,onDetails}:{student:Student;session:Session;answers:Answer[];store:JournalStore;onDetails:()=>void}) {
- const [open,setOpen]=useState(false), [note,setNote]=useState(''),[message,setMessage]=useState(''),[last,setLast]=useState<string>();
+ const [open,setOpen]=useState(false),[flip,setFlip]=useState(false),[panelHeight,setPanelHeight]=useState<number>(), [note,setNote]=useState(''),[message,setMessage]=useState(''),[last,setLast]=useState<string>();
  const ref=useRef<HTMLDivElement>(null), button=useRef<HTMLButtonElement>(null), panelId=useId();
  useEffect(()=>{if(!open)return;const outside=(e:PointerEvent)=>{if(!ref.current?.contains(e.target as Node))setOpen(false);};document.addEventListener('pointerdown',outside);return()=>document.removeEventListener('pointerdown',outside);},[open]);
+ const close=()=>{setOpen(false);button.current?.focus();};
+ useLayoutEffect(()=>{
+  if(!open)return;
+  const viewport=window.visualViewport;
+  const place=()=>{
+   const r=ref.current?.getBoundingClientRect(),p=ref.current?.querySelector<HTMLElement>('.quick-response-panel');
+   if(!r||!p)return;
+   const top=viewport?.offsetTop||0,bottom=top+(viewport?.height||window.innerHeight)-85;
+   const above=Math.max(0,r.top-top-12),below=Math.max(0,bottom-r.bottom-12);
+   const up=below<p.scrollHeight&&above>below;
+   setFlip(up);setPanelHeight(Math.max(90,Math.floor(up?above:below)));
+  };
+  place();window.addEventListener('resize',place);window.addEventListener('scroll',place,true);
+  viewport?.addEventListener('resize',place);viewport?.addEventListener('scroll',place);
+  return()=>{window.removeEventListener('resize',place);window.removeEventListener('scroll',place,true);viewport?.removeEventListener('resize',place);viewport?.removeEventListener('scroll',place);};
+ },[open,message,answers.length]);
  const add=(grade:Grade)=>{try{setLast(store.saveAnswer({studentId:student.id,sessionId:session.id,grade,note}));setNote('');setMessage(`Ответ ${grade} добавлен`);}catch(e){setMessage(e instanceof Error?e.message:'Не удалось сохранить ответ');}};
- return <div className="quick-response" ref={ref} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();setOpen(false);button.current?.focus();}}}>
+ return <div className="quick-response" ref={ref} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();close();}}}>
   <div className="answer-sequence">{answers.length>0&&<button className="answers-recorded" aria-label={`Ответы: ${student.fullName}`} onClick={onDetails}>{answers.slice(0,3).map(a=><span key={a.id} className={`response-grade grade-${a.grade}`} title={a.note||a.grade}>{a.grade}</span>)}{answers.length>3&&<small>еще {answers.length-3}</small>}</button>}
    <button type="button" ref={button} className={`record-add ${open?'active':''}`} aria-label={`Добавить ответ: ${student.fullName}`} aria-expanded={open} aria-controls={panelId} title="Быстрый ответ" onClick={()=>{setOpen(v=>!v);setMessage('');}}><Plus size={17}/></button>
   </div>
-  {open&&<div className="quick-response-panel" id={panelId} role="group" aria-label={`Быстрый ответ: ${student.fullName}`}><header><span>Ответ за занятие</span><button aria-label="Закрыть быстрый ответ" onClick={()=>setOpen(false)}><X size={15}/></button></header><input aria-label={`Комментарий к быстрому ответу: ${student.fullName}`} placeholder="Комментарий, если нужен" maxLength={3000} value={note} onChange={e=>setNote(e.target.value)}/><div className="quick-grades">{(['+','2','3','4','5'] as Grade[]).map(g=><button type="button" key={g} onClick={()=>add(g)} aria-label={`Быстрый ответ ${g}: ${student.fullName}`}>{g}</button>)}</div><footer><span role="status">{message||'Выбери отметку для записи'}</span>{last&&<button onClick={()=>{try{store.removeAnswer(last);setLast(undefined);setMessage('Последний ответ отменен');}catch(e){setMessage(e instanceof Error?e.message:'Не удалось отменить');}}}>Отменить</button>}</footer><button className="quick-history" type="button" onClick={onDetails}>Все ответы за эту пару · {answers.length}</button></div>}
+  {open&&<div className={`quick-response-panel ${flip?'flip-up':''}`} style={{maxHeight:panelHeight}} id={panelId} role="group" aria-label={`Быстрый ответ: ${student.fullName}`}><header><span>Ответ за занятие</span><button aria-label="Закрыть быстрый ответ" onClick={close}><X size={15}/></button></header><input aria-label={`Комментарий к быстрому ответу: ${student.fullName}`} placeholder="Комментарий, если нужен" maxLength={3000} value={note} onChange={e=>setNote(e.target.value)}/><div className="quick-grades">{(['+','2','3','4','5'] as Grade[]).map(g=><button type="button" key={g} onClick={()=>add(g)} aria-label={`Быстрый ответ ${g}: ${student.fullName}`}>{g}</button>)}</div><footer><span role="status">{message||'Выбери отметку для записи'}</span>{last&&<button onClick={()=>{try{store.removeAnswer(last);setLast(undefined);setMessage('Последний ответ отменен');}catch(e){setMessage(e instanceof Error?e.message:'Не удалось отменить');}}}>Отменить</button>}</footer><button className="quick-history" type="button" onClick={onDetails}>Все ответы за эту пару · {answers.length}</button></div>}
  </div>;
 }
