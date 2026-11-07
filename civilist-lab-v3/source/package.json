@@ -1,0 +1,20 @@
+{
+  "name": "civilist-legal-atlas",
+  "private": true,
+  "version": "3.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build && vite build --mode offline --outDir offline && node scripts/package.mjs",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@fontsource/golos-text": "^5.3.0",
+    "@fontsource/unbounded": "^5.3.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.6",
+    "vite-plugin-singlefile": "^2.3.4"
+  }
+}
