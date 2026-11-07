@@ -51,10 +51,10 @@ export function mountBooks(container,onSelect){
   scene.add(new THREE.AmbientLight('#e5f1ff',1.7));
   const light=new THREE.DirectionalLight('#fff5dc',4);light.position.set(-4,6,7);light.castShadow=true;light.shadow.mapSize.set(1024,1024);light.shadow.camera.left=-7;light.shadow.camera.right=7;light.shadow.camera.top=5;light.shadow.camera.bottom=-5;scene.add(light);
   const rim=new THREE.DirectionalLight('#71e4ff',2);rim.position.set(5,4,-3);scene.add(rim);
-  const floor=add(scene,new THREE.PlaneGeometry(16,16),new THREE.ShadowMaterial({opacity:.28}),.7,-1.72,-.3);floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;floor.castShadow=false;
+  const floor=add(scene,new THREE.PlaneGeometry(16,16),new THREE.ShadowMaterial({opacity:.28}),.7,-2.1,-.3);floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;floor.castShadow=false;
   const pages=pageTex(),books=editions.map((e,i)=>volume(e,i,pages));books.forEach(b=>scene.add(b));
-  const pos=[[-1.25,-.18,.5],[.67,-.45,.2],[2.58,-.14,-.17]],ang=[[-.08,-.34,-.09],[-.08,.07,.07],[-.08,.37,-.06]];
-  camera.position.set(.8,.8,9.3);camera.lookAt(.68,-.3,0);
+  const pos=[[-1.25,-.55,.5],[.67,-.78,.2],[2.58,-.51,-.17]],ang=[[-.08,-.34,-.09],[-.08,.07,.07],[-.08,.37,-.06]];
+  camera.position.set(.8,.8,9.3);camera.lookAt(.68,0,0);
   let active=true,raf=0,hover=-1,chosen=-1,start=performance.now();
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function resize(){if(!active)return;const w=container.clientWidth,h=container.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(h,1);camera.updateProjectionMatrix();renderer.render(scene,camera)}

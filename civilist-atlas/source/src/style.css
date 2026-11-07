@@ -35,6 +35,7 @@
 .final-fallback{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center}
 .final-fallback svg{width:100%;height:85%;filter:drop-shadow(7px 17px 10px rgba(0,15,72,.27))}
 .final-fallback-captions{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;color:#e8ff55;font:600 clamp(10px,.8vw,14px) 'Golos Text';letter-spacing:.11em;padding:0 2% 2%}
+.fallback-library-note{position:absolute;right:3%;bottom:4%;font-size:9px;letter-spacing:.13em;color:#d3e6ff}
 .doc-rows div{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px}
 .doc-rows b{font-size:clamp(11px,.83vw,15px)}
 .doc-rows span{font-size:clamp(15px,1.13vw,21px);line-height:1.25}
