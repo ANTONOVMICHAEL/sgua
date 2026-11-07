@@ -133,12 +133,12 @@ const transforms={
 };
 const appearances={
   registration:[['building'],['building','contract','application'],['building','register','rails'],['building','rails','ban','refusal'],['building','court'],['building','rent'],['building','forecast'],['building','objection'],['building','court','link']],
-  municipality:[['building'],['building','contract'],['building','register','company'],['building','authority','provision'],['building','register','contract','authority'],['building','authority','link']],
+  municipality:[['building'],['building','contract'],['building','register'],['building','register','company'],['building','authority','provision'],['building','register','contract','authority'],['building','authority','link']],
   institutions:[['left','right','deviceA','deviceB'],['left','right','deviceA','contractA'],['left','right','deviceB','contractB'],['left','right','deviceA','deviceB','claim'],['left','right','assets','deviceA','deviceB'],['left','right','deviceA','deviceB']]
 };
 const cameras={
   registration:[[4,3.1,7.4],[3.1,2.5,6.6],[-3.4,2.7,6.4],[3.7,2.55,6.2],[-3,2.7,6.1],[-3.3,2.75,6.4],[3.2,2.7,6.3],[3.1,2.65,6.4],[4,3.2,7.2]],
-  municipality:[[3.8,3,7.4],[3.1,2.5,6.5],[-3,2.7,6.4],[3.2,2.5,6.4],[3.7,2.9,7],[4,3.1,7.2]],
+  municipality:[[3.8,3,7.4],[3.1,2.5,6.5],[-3,2.7,6.4],[2.9,2.7,6.3],[3.2,2.5,6.4],[3.7,2.9,7],[4,3.1,7.2]],
   institutions:[[0,3.2,8.7],[-3.3,2.7,7.4],[3.3,2.7,7.4],[0,3.3,8.5],[2.2,3.1,8.2],[0,3.3,8.8]]
 };
 
