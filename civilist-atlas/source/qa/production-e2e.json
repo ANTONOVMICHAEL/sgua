@@ -1,0 +1,148 @@
+[
+  {
+    "canvas": 1,
+    "case": "I",
+    "step": "1",
+    "title": "Подпись есть. Кто продавец?"
+  },
+  {
+    "canvas": 1,
+    "case": "I",
+    "step": "2",
+    "title": "Кто стоит за подписью?",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "I",
+    "step": "3",
+    "title": "Кому принадлежит здание?",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "I",
+    "step": "4",
+    "title": "Статус не равен титулу",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "I",
+    "step": "5",
+    "title": "Появилось полномочие",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "I",
+    "step": "6",
+    "title": "Разведите три качества"
+  },
+  {
+    "canvas": 1,
+    "case": "I",
+    "step": "7",
+    "title": "Субъект: Город Н"
+  },
+  {
+    "canvas": 1,
+    "case": "II",
+    "step": "1",
+    "title": "Два учреждения. Два долга?"
+  },
+  {
+    "canvas": 1,
+    "case": "II",
+    "step": "2",
+    "title": "Казенное учреждение",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "II",
+    "step": "3",
+    "title": "Бюджетное учреждение",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "II",
+    "step": "4",
+    "title": "Обратиться сразу к казне?"
+  },
+  {
+    "canvas": 1,
+    "case": "II",
+    "step": "5",
+    "title": "Средства и имущество",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "II",
+    "step": "6",
+    "title": "Учреждение не равно государству"
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "1",
+    "title": "Государственная ошибка?"
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "2",
+    "title": "Две правовые линии",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "3",
+    "title": "Запрет был снят",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "4",
+    "title": "Два последовательных акта",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "5",
+    "title": "Незаконность установлена",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "6",
+    "title": "480 000 руб. аренды",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "7",
+    "title": "Выручка еще не прибыль",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "8",
+    "title": "«Мы не продавали здание»",
+    "documentOpened": true
+  },
+  {
+    "canvas": 1,
+    "case": "III",
+    "step": "9",
+    "title": "Иной источник обязательства"
+  }
+]

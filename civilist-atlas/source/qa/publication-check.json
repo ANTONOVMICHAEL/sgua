@@ -1,0 +1,30 @@
+{
+  "url": "https://antonovmichael.github.io/sgua/civilist-atlas/",
+  "caseOpened": true,
+  "documentOpened": true,
+  "fontBefore": "15.5382px",
+  "fontAfter": "16.356px",
+  "expectedBuild": "/sgua/civilist-atlas/assets/index-CxflJnXD.js",
+  "historicalErrors": [
+    {
+      "level": "error",
+      "message": "THREE.WebGLRenderer: A WebGL context could not be created. Reason:  Could not create a WebGL context, VENDOR = 0xffff, DEVICE = 0xffff, GL_VENDOR = Disabled, GL_RENDERER = Disabled, Sandboxed = yes, Optimus = no, AMD switchable = no, Reset notification strategy = 0x0000, ErrorMessage = BindToCurrentSequence failed: .",
+      "timestamp": "2026-11-08T15:19:35.058Z",
+      "url": "https://antonovmichael.github.io/sgua/civilist-atlas/assets/index-CvF9Xr7N.js"
+    },
+    {
+      "level": "error",
+      "message": "THREE.WebGLRenderer: A WebGL context could not be created. Reason:  Could not create a WebGL context, VENDOR = 0xffff, DEVICE = 0xffff, GL_VENDOR = Disabled, GL_RENDERER = Disabled, Sandboxed = yes, Optimus = no, AMD switchable = no, Reset notification strategy = 0x0000, ErrorMessage = BindToCurrentSequence failed: .",
+      "timestamp": "2026-11-08T15:19:35.060Z",
+      "url": "https://antonovmichael.github.io/sgua/civilist-atlas/assets/index-CvF9Xr7N.js"
+    },
+    {
+      "level": "error",
+      "message": "THREE.WebGLRenderer: THREE.WebGLRenderer: Error creating WebGL context.",
+      "timestamp": "2026-11-08T15:19:35.061Z",
+      "url": "https://antonovmichael.github.io/sgua/civilist-atlas/assets/index-CvF9Xr7N.js"
+    }
+  ],
+  "currentBuildErrors": [],
+  "historicalErrorsNote": "These entries are from the previously loaded V4 build index-CvF9Xr7N.js, not the V5 publication."
+}
