@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-08",
+  "results": [
+    {
+      "name": "Exactly 7 + 6 + 9 teaching frames",
+      "status": "passed"
+    },
+    {
+      "name": "Every frame has a fact focus and audience question",
+      "status": "passed"
+    },
+    {
+      "name": "Conclusions occur only at each case end",
+      "status": "passed"
+    },
+    {
+      "name": "Every displayed document is an educational model",
+      "status": "passed"
+    },
+    {
+      "name": "Full homework preserves two suppliers and all stated sums",
+      "status": "passed"
+    },
+    {
+      "name": "No future final solution is mislabeled as the original fact",
+      "status": "passed"
+    },
+    {
+      "name": "Offline HTML has no external script or stylesheet dependency",
+      "status": "passed"
+    },
+    {
+      "name": "Offline policy denies network connections",
+      "status": "passed"
+    },
+    {
+      "name": "Offline fonts and logo are embedded",
+      "status": "passed"
+    },
+    {
+      "name": "All published entry resources exist at the fixed Pages base",
+      "status": "passed"
+    }
+  ]
+}

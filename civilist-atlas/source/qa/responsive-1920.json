@@ -1,0 +1,228 @@
+[
+  {
+    "label": "1920x1080-library",
+    "boxes": [
+      {
+        "class": "footer",
+        "clientHeight": 66,
+        "h": 67,
+        "scrollHeight": 66,
+        "w": 1774.09375,
+        "x": 72.953125,
+        "y": 1013
+      }
+    ],
+    "height": 1080,
+    "reading": false,
+    "scrollHeight": 1080,
+    "scrollWidth": 1920,
+    "width": 1920
+  },
+  {
+    "label": "1920x1080-I5",
+    "boxes": [
+      {
+        "class": "",
+        "clientHeight": 100,
+        "h": 99.6875,
+        "scrollHeight": 105,
+        "w": 364,
+        "x": 72.953125,
+        "y": 208
+      },
+      {
+        "class": "lead",
+        "clientHeight": 103,
+        "h": 102.65625,
+        "scrollHeight": 103,
+        "w": 432.453125,
+        "x": 72.953125,
+        "y": 325.6875
+      },
+      {
+        "class": "narrative-bottom",
+        "clientHeight": 53,
+        "h": 53,
+        "scrollHeight": 53,
+        "w": 432.453125,
+        "x": 72.953125,
+        "y": 826
+      },
+      {
+        "class": "reading",
+        "clientHeight": 761,
+        "h": 761,
+        "scrollHeight": 761,
+        "w": 656.40625,
+        "x": 1190.640625,
+        "y": 140
+      },
+      {
+        "class": "question-band",
+        "clientHeight": 111,
+        "h": 112,
+        "scrollHeight": 111,
+        "w": 1774.09375,
+        "x": 72.953125,
+        "y": 901
+      },
+      {
+        "class": "footer",
+        "clientHeight": 66,
+        "h": 67,
+        "scrollHeight": 66,
+        "w": 1774.09375,
+        "x": 72.953125,
+        "y": 1013
+      }
+    ],
+    "heading": "Появилось полномочие",
+    "height": 1080,
+    "reading": true,
+    "scrollHeight": 1080,
+    "scrollWidth": 1920,
+    "width": 1920,
+    "reader": {
+      "client": 674,
+      "scroll": 674
+    }
+  },
+  {
+    "label": "1920x1080-II5",
+    "boxes": [
+      {
+        "class": "",
+        "clientHeight": 100,
+        "h": 99.6875,
+        "scrollHeight": 105,
+        "w": 364,
+        "x": 72.953125,
+        "y": 208
+      },
+      {
+        "class": "lead",
+        "clientHeight": 103,
+        "h": 102.65625,
+        "scrollHeight": 103,
+        "w": 432.453125,
+        "x": 72.953125,
+        "y": 325.6875
+      },
+      {
+        "class": "narrative-bottom",
+        "clientHeight": 53,
+        "h": 53,
+        "scrollHeight": 53,
+        "w": 432.453125,
+        "x": 72.953125,
+        "y": 826
+      },
+      {
+        "class": "reading",
+        "clientHeight": 761,
+        "h": 761,
+        "scrollHeight": 761,
+        "w": 656.40625,
+        "x": 1190.640625,
+        "y": 140
+      },
+      {
+        "class": "question-band",
+        "clientHeight": 111,
+        "h": 112,
+        "scrollHeight": 111,
+        "w": 1774.09375,
+        "x": 72.953125,
+        "y": 901
+      },
+      {
+        "class": "footer",
+        "clientHeight": 66,
+        "h": 67,
+        "scrollHeight": 66,
+        "w": 1774.09375,
+        "x": 72.953125,
+        "y": 1013
+      }
+    ],
+    "heading": "Средства и имущество",
+    "height": 1080,
+    "reading": true,
+    "scrollHeight": 1080,
+    "scrollWidth": 1920,
+    "width": 1920,
+    "reader": {
+      "client": 674,
+      "scroll": 674
+    }
+  },
+  {
+    "label": "1920x1080-III7",
+    "boxes": [
+      {
+        "class": "",
+        "clientHeight": 100,
+        "h": 99.6875,
+        "scrollHeight": 105,
+        "w": 364,
+        "x": 72.953125,
+        "y": 208
+      },
+      {
+        "class": "lead",
+        "clientHeight": 103,
+        "h": 102.65625,
+        "scrollHeight": 103,
+        "w": 432.453125,
+        "x": 72.953125,
+        "y": 325.6875
+      },
+      {
+        "class": "narrative-bottom",
+        "clientHeight": 53,
+        "h": 53,
+        "scrollHeight": 53,
+        "w": 432.453125,
+        "x": 72.953125,
+        "y": 826
+      },
+      {
+        "class": "reading",
+        "clientHeight": 761,
+        "h": 761,
+        "scrollHeight": 761,
+        "w": 656.40625,
+        "x": 1190.640625,
+        "y": 140
+      },
+      {
+        "class": "question-band",
+        "clientHeight": 111,
+        "h": 112,
+        "scrollHeight": 111,
+        "w": 1774.09375,
+        "x": 72.953125,
+        "y": 901
+      },
+      {
+        "class": "footer",
+        "clientHeight": 66,
+        "h": 67,
+        "scrollHeight": 66,
+        "w": 1774.09375,
+        "x": 72.953125,
+        "y": 1013
+      }
+    ],
+    "heading": "Выручка еще не прибыль",
+    "height": 1080,
+    "reading": true,
+    "scrollHeight": 1080,
+    "scrollWidth": 1920,
+    "width": 1920,
+    "reader": {
+      "client": 674,
+      "scroll": 674
+    }
+  }
+]

@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {cases} from '../src/content.js';
+import {homework} from '../src/homework.js';
+const root=path.resolve(import.meta.dirname,'..');
+const results=[];
+function check(name,fn){fn();results.push({name,status:'passed'})}
+check('Exactly 7 + 6 + 9 teaching frames',()=>assert.deepEqual(cases.map(c=>c.steps.length),[7,6,9]));
+check('Every frame has a fact focus and audience question',()=>cases.forEach(c=>c.steps.forEach(s=>assert.ok(s.label&&s.title&&s.lead&&s.question))));
+check('Conclusions occur only at each case end',()=>cases.forEach(c=>assert.deepEqual(c.steps.map((s,i)=>s.reveal?i:null).filter(i=>i!==null),[c.steps.length-1])));
+check('Every displayed document is an educational model',()=>cases.forEach(c=>c.steps.filter(s=>s.doc).forEach(s=>assert.match(s.doc.tag,/учебн/i))));
+check('Full homework preserves two suppliers and all stated sums',()=>{assert.match(homework[1].join(' '),/Оба поставщика/);for(const amount of ['1 800 000','1 500 000'])assert.ok(homework[1].join(' ').includes(amount));for(const amount of ['12 000 000','480 000','1 600 000'])assert.ok(homework[2].join(' ').includes(amount))});
+check('No future final solution is mislabeled as the original fact',()=>assert.ok(!cases[1].steps[0].title.includes('Один поставщик')));
+const html=fs.readFileSync(path.join(root,'release/CIVILIST_atlas_offline.html'),'utf8');
+check('Offline HTML has no external script or stylesheet dependency',()=>{assert.ok(!/<script\b[^>]*\bsrc\s*=/i.test(html));assert.ok(!/<link\b[^>]*rel=["']stylesheet/i.test(html));const urls=[...html.matchAll(/url\(([^)]+)\)/g)].map(m=>m[1].replace(/^['"]|['"]$/g,''));assert.ok(urls.every(u=>u.startsWith('data:')||u.startsWith('#')))});
+check('Offline policy denies network connections',()=>assert.ok(html.includes("connect-src 'none'")));
+check('Offline fonts and logo are embedded',()=>{assert.ok(html.includes('data:font/woff'));assert.ok(html.includes('data:image/svg+xml'))});
+const index=fs.readFileSync(path.join(root,'dist/index.html'),'utf8');
+check('All published entry resources exist at the fixed Pages base',()=>{for(const m of index.matchAll(/(?:src|href)="(\/sgua\/civilist-atlas\/[^"#]+)"/g))assert.ok(fs.existsSync(path.join(root,'dist',m[1].replace('/sgua/civilist-atlas/',''))),m[1])});
+fs.mkdirSync(path.join(root,'qa'),{recursive:true});fs.writeFileSync(path.join(root,'qa/build-verification.json'),JSON.stringify({date:'2026-11-08',results},null,2));
+console.log(JSON.stringify({checks:results.length,passed:results.length,results},null,2));

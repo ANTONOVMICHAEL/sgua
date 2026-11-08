@@ -1,0 +1,332 @@
+[
+  {
+    "label": "I/1",
+    "canvases": 1,
+    "case": "I",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "1",
+    "title": "Подпись есть. Кто продавец?",
+    "width": 1363
+  },
+  {
+    "label": "I/2",
+    "canvases": 1,
+    "case": "I",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "2",
+    "title": "Кто стоит за подписью?",
+    "width": 1363
+  },
+  {
+    "document": 2,
+    "opened": true
+  },
+  {
+    "label": "I/3",
+    "canvases": 1,
+    "case": "I",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "3",
+    "title": "Кому принадлежит здание?",
+    "width": 1363
+  },
+  {
+    "document": 3,
+    "opened": true
+  },
+  {
+    "label": "I/4",
+    "canvases": 1,
+    "case": "I",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "4",
+    "title": "Статус не равен титулу",
+    "width": 1363
+  },
+  {
+    "document": 4,
+    "opened": true
+  },
+  {
+    "label": "I/5",
+    "canvases": 1,
+    "case": "I",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "5",
+    "title": "Появилось полномочие",
+    "width": 1363
+  },
+  {
+    "document": 5,
+    "opened": true
+  },
+  {
+    "label": "I/6",
+    "canvases": 1,
+    "case": "I",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "6",
+    "title": "Разведите три качества",
+    "width": 1363
+  },
+  {
+    "label": "I/7",
+    "canvases": 1,
+    "case": "I",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "7",
+    "title": "Субъект: Город Н",
+    "width": 1363
+  },
+  {
+    "label": "II/1",
+    "canvases": 1,
+    "case": "II",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "1",
+    "title": "Два учреждения. Два долга?",
+    "width": 1363
+  },
+  {
+    "label": "II/2",
+    "canvases": 1,
+    "case": "II",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "2",
+    "title": "Казенное учреждение",
+    "width": 1363
+  },
+  {
+    "case": "II",
+    "document": 2,
+    "opened": true
+  },
+  {
+    "label": "II/3",
+    "canvases": 1,
+    "case": "II",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "3",
+    "title": "Бюджетное учреждение",
+    "width": 1363
+  },
+  {
+    "case": "II",
+    "document": 3,
+    "opened": true
+  },
+  {
+    "label": "II/4",
+    "canvases": 1,
+    "case": "II",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "4",
+    "title": "Обратиться сразу к казне?",
+    "width": 1363
+  },
+  {
+    "label": "II/5",
+    "canvases": 1,
+    "case": "II",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "5",
+    "title": "Средства и имущество",
+    "width": 1363
+  },
+  {
+    "case": "II",
+    "document": 5,
+    "opened": true
+  },
+  {
+    "label": "II/6",
+    "canvases": 1,
+    "case": "II",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "6",
+    "title": "Учреждение не равно государству",
+    "width": 1363
+  },
+  {
+    "label": "III/1",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "1",
+    "title": "Государственная ошибка?",
+    "width": 1363
+  },
+  {
+    "label": "III/2",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "2",
+    "title": "Две правовые линии",
+    "width": 1363
+  },
+  {
+    "case": "III",
+    "document": 2,
+    "opened": true
+  },
+  {
+    "label": "III/3",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "3",
+    "title": "Запрет был снят",
+    "width": 1363
+  },
+  {
+    "case": "III",
+    "document": 3,
+    "opened": true
+  },
+  {
+    "label": "III/4",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "4",
+    "title": "Два последовательных акта",
+    "width": 1363
+  },
+  {
+    "case": "III",
+    "document": 4,
+    "opened": true
+  },
+  {
+    "label": "III/5",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "5",
+    "title": "Незаконность установлена",
+    "width": 1363
+  },
+  {
+    "case": "III",
+    "document": 5,
+    "opened": true
+  },
+  {
+    "label": "III/6",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "6",
+    "title": "480 000 руб. аренды",
+    "width": 1363
+  },
+  {
+    "case": "III",
+    "document": 6,
+    "opened": true
+  },
+  {
+    "label": "III/7",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "7",
+    "title": "Выручка еще не прибыль",
+    "width": 1363
+  },
+  {
+    "case": "III",
+    "document": 7,
+    "opened": true
+  },
+  {
+    "label": "III/8",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "8",
+    "title": "«Мы не продавали здание»",
+    "width": 1363
+  },
+  {
+    "case": "III",
+    "document": 8,
+    "opened": true
+  },
+  {
+    "label": "III/9",
+    "canvases": 1,
+    "case": "III",
+    "height": 936,
+    "overflowX": false,
+    "overflowY": false,
+    "renderer": "software",
+    "step": "9",
+    "title": "Иной источник обязательства",
+    "width": 1363
+  }
+]
