@@ -1,8 +1,23 @@
 import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import homeImage from './assets/home.webp';
 import caseIImage from './assets/case-i.webp';
 import caseIIImage from './assets/case-ii.webp';
 import caseIIIImage from './assets/case-iii.webp';
+import coverIImage from './assets/cover-i.jpg';
+import coverIIImage from './assets/cover-ii.jpg';
+import coverIIIImage from './assets/cover-iii.jpg';
+import dossierURL from './assets/archive-dossier.glb?url';
+import supplyURL from './assets/supply-dossier.glb?url';
+import propertyURL from './assets/property-dossier.glb?url';
+import saleURL from './assets/sale-contract.glb?url';
+import equipmentURL from './assets/accepted-equipment.glb?url';
+import bookIURL from './assets/book-i.glb?url';
+import bookIIURL from './assets/book-ii.glb?url';
+import bookIIIURL from './assets/book-iii.glb?url';
+import cleanIImage from './assets/clean-i.webp';
+import cleanIIImage from './assets/clean-ii.webp';
+import cleanIIIImage from './assets/clean-iii.webp';
 
 // A stage for teaching: the camera may move, the evidence never advances itself.
 const TAU = Math.PI * 2;
@@ -10,10 +25,13 @@ const clamp = THREE.MathUtils.clamp;
 const ease = x => { x=clamp(x,0,1); return x*x*(3-2*x); };
 const ink = '#183555';
 const colors = [
-  {cover:'#005da6',edge:'#e8d9b3',metal:'#d8b969',accent:'#006ed0'},
-  {cover:'#ef5b35',edge:'#ebdbc7',metal:'#f7c990',accent:'#ef4c2b'},
-  {cover:'#177d70',edge:'#ddcda6',metal:'#bed9bd',accent:'#067e89'},
+  {cover:'#203c66',edge:'#e8d9b3',metal:'#d8b969',accent:'#006ed0'},
+  {cover:'#b26246',edge:'#ebdbc7',metal:'#f7c990',accent:'#ef4c2b'},
+  {cover:'#4f917b',edge:'#ddcda6',metal:'#bed9bd',accent:'#067e89'},
 ];
+const coverImages=[coverIImage,coverIIImage,coverIIIImage];
+const cleanImages=[cleanIImage,cleanIIImage,cleanIIIImage];
+const bookURLs=[bookIURL,bookIIURL,bookIIIURL];
 const makeMat=(color,roughness=.68,metalness=0,extra={})=>new THREE.MeshPhysicalMaterial({color,roughness,metalness,...extra});
 const solid=(w,h,d,mat,x=0,y=0,z=0)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;return m};
 function roundPlate(w,h,d,r,mat){
@@ -31,7 +49,12 @@ function line(points,r,mat,segments=48){
 }
 function canvasTexture(draw,w=1024,h=1024){
   const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');draw(ctx,w,h);
-  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t;
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=16;
+  if(document.fonts?.status!=='loaded')document.fonts.ready.then(()=>{
+    if(!t.image)return;
+    draw(ctx,w,h);t.needsUpdate=true;document.dispatchEvent(new Event('civilist-texture-ready'));
+  });
+  return t;
 }
 function grainTexture(base,seed=1){
   let n=seed|0;const rng=()=>{n=(Math.imul(n,1664525)+1013904223)|0;return (n>>>0)/4294967296};
@@ -93,18 +116,18 @@ function textPlane(text,width,height,{size=75,color='#233c52',bg=null,weight=600
   const m=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,transparent:!bg,side:THREE.DoubleSide,depthWrite:false}));
   return m;
 }
-function volume(index){
+function proceduralVolume(index,onReady=()=>{}){
   const group=new THREE.Group();group.userData.bookIndex=index;
-  const c=colors[index],material=makeMat('#ffffff',.68,.02,{map:grainTexture(c.cover,199+index),bumpMap:clothBump(117+index),bumpScale:.032,clearcoat:.08,clearcoatRoughness:.56});
+  const c=colors[index],material=makeMat('#ffffff',.83,.02,{map:grainTexture(c.cover,199+index),bumpMap:clothBump(117+index),bumpScale:.011,clearcoat:.03,clearcoatRoughness:.75});
   const page=makeMat('#f7f0db',.96),foil=makeMat(c.metal,.23,.82);
   // Boards project beyond the page block; the spine is hinged, not painted on a cuboid.
   group.add(solid(2.28,3.31,.39,page,0,1.75,0));
   for(const z of [-.253,.205]){
-    const board=roundPlate(2.55,3.54,.064,.07,material);board.position.set(-.09,1.76,z);group.add(board);
+    const board=roundPlate(2.55,3.54,.064,.02,material);board.position.set(-.09,1.76,z);group.add(board);
     const endpaper=solid(2.34,3.30,.006,makeMat(index===2?'#e2e9d9':'#d8d1b9',.95),-.04,1.76,z<0?z+.076:z-.012);group.add(endpaper);
   }
-  const spine=new THREE.Mesh(new THREE.CylinderGeometry(.275,.275,3.53,32,1,false,Math.PI/2,Math.PI),material);
-  spine.position.set(-1.32,1.76,-.004);spine.rotation.y=Math.PI/2;spine.castShadow=true;group.add(spine);
+  const spine=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,3.53,32,1,false,Math.PI/2,Math.PI),material);
+  spine.position.set(-1.28,1.76,-.004);spine.rotation.y=Math.PI/2;spine.castShadow=true;group.add(spine);
   for(let i=0;i<4;i++){
     const band=solid(.055,.017,.53,foil,-1.33,.31+i*.97,-.01);band.rotation.z=.03;group.add(band);
   }
@@ -120,21 +143,48 @@ function volume(index){
     group.add(solid(.009,3.39,.009,foil,x,1.76,.281));
   }
   for(const y of [.074,3.446])group.add(solid(2.4,.008,.008,foil,-.09,y,.282));
-  const front=new THREE.Mesh(new THREE.PlaneGeometry(2.38,3.31),new THREE.MeshBasicMaterial({map:titleTexture(index),transparent:true,depthWrite:false}));
+  const faceTexture=new THREE.TextureLoader().load(coverImages[index],onReady);
+  faceTexture.colorSpace=THREE.SRGBColorSpace;faceTexture.anisotropy=16;
+  faceTexture.generateMipmaps=true;faceTexture.minFilter=THREE.LinearMipmapLinearFilter;
+  const front=new THREE.Mesh(new THREE.PlaneGeometry(2.38,3.31),new THREE.MeshPhysicalMaterial({color:index===2?'#7fd4b2':'#ffffff',map:faceTexture,roughness:.84,bumpMap:clothBump(97+index),bumpScale:.011,clearcoat:.025}));
   front.position.set(-.09,1.76,.289);group.add(front);
   const spineTitle=textPlane(`ЦИВИЛИСТ  /  ${['I','II','III'][index]}`,2.1,.26,{size:62,color:index===2?'#c74832':'#f8dd9e'});
-  spineTitle.rotation.y=-Math.PI/2;spineTitle.rotation.z=Math.PI/2;spineTitle.position.set(-1.607,1.8,0);group.add(spineTitle);
-  if(index===1){
-    for(let y of [.6,1.63,2.65]){
-      const raised=solid(2.39,.033,.024,foil,-.09,y,.295);group.add(raised);
-    }
-    group.add(solid(.10,1.01,.018,makeMat('#f1b9a6',.93),.92,-.34,.06));
-  }
-  if(index===2){
-    for(let k=0;k<3;k++)group.add(solid(.10,.014,.55,foil,-1.34,.45+k*1.37,-.01));
-    const bookmark=solid(.095,.58,.02,makeMat('#cc593f',.68),.32,-.26,-.1);group.add(bookmark);
-  }
+  spineTitle.rotation.y=-Math.PI/2;spineTitle.rotation.z=Math.PI/2;spineTitle.position.set(-1.516,1.8,0);group.add(spineTitle);
   group.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh){o.castShadow=true;o.receiveShadow=true}});
+  front.castShadow=false;front.receiveShadow=false;
+  spineTitle.castShadow=false;spineTitle.receiveShadow=false;
+  return group;
+}
+const bookAssets=new Map();
+function spineImprint(index){
+  const titles=['КТО ЯВЛЯЕТСЯ СУБЪЕКТОМ?','КТО ОТВЕЧАЕТ ПО ОБЯЗАТЕЛЬСТВУ?','КТО ВОЗМЕЩАЕТ ВРЕД?'];
+  const texture=canvasTexture((ctx,w,h)=>{
+    ctx.clearRect(0,0,w,h);
+    ctx.translate(w/2,h/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle=index===2?'#204b42':'#f3e8d6';
+    ctx.font='600 51px Onest, Arial';ctx.fillText(`ЦИВИЛИСТ  /  ${['I','II','III'][index]}  /  ${titles[index]}`,0,0,865);
+    ctx.resetTransform();
+  },256,1024);
+  const plane=new THREE.Mesh(new THREE.PlaneGeometry(.31,2.73),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,side:THREE.FrontSide}));
+  plane.rotation.y=-Math.PI/2;
+  plane.position.set([-1.306,-1.461,-1.326][index],0,0);
+  plane.castShadow=false;plane.receiveShadow=false;
+  return plane;
+}
+function volume(index,onReady=()=>{}){
+  const group=new THREE.Group();group.userData.bookIndex=index;
+  // Keep the transform used for inspection around the centre of the volume.
+  // The outer group retains the layout position and its slow ambient movement.
+  const pivot=new THREE.Group();pivot.position.y=1.77;group.add(pivot);
+  group.userData.inspectionPivot=pivot;
+  if(!bookAssets.has(index))bookAssets.set(index,new Promise((resolve,reject)=>{
+    new GLTFLoader().load(bookURLs[index],asset=>resolve(asset.scene),undefined,reject);
+  }));
+  bookAssets.get(index).then(source=>{
+    const model=source.clone(true);
+    model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
+    model.position.y-=1.77;pivot.add(model,spineImprint(index));onReady();
+  }).catch(()=>{const model=proceduralVolume(index,onReady);model.position.y-=1.77;pivot.add(model);onReady()});
   return group;
 }
 
@@ -168,17 +218,75 @@ function folio(title,accent='#005da6',kind=0){
   return group;
 }
 
-function photoPlate(url,width=19.2,x=0,y=2.76){
-  const texture=new THREE.TextureLoader().load(url);
-  texture.colorSpace=THREE.SRGBColorSpace;
-  texture.anisotropy=8;
-  const plate=new THREE.Mesh(
-    new THREE.PlaneGeometry(width,width*9/16),
-    new THREE.MeshBasicMaterial({map:texture,toneMapped:false,depthWrite:false})
-  );
-  plate.position.set(x,y,-3.45);
-  plate.renderOrder=-10;
-  return plate;
+function mountDossier(url,target,title,accent,onReady=()=>{}){
+  new GLTFLoader().load(url,asset=>{
+    const model=asset.scene,box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3());
+    model.position.set(-center.x,-box.min.y,-center.z);
+    model.traverse(o=>{
+      if(!o.isMesh)return;
+      o.castShadow=true;o.receiveShadow=true;
+      if(target.userData.paperTint&&/paper|contract/i.test(o.material?.name??'')){
+        o.material=o.material.clone();
+        o.material.color.multiply(new THREE.Color(target.userData.paperTint));
+      }
+      if(target.userData.dossierTint&&/linen|cloth|layered edge/i.test(o.material?.name??'')){
+        o.material=o.material.clone();
+        o.material.color.multiplyScalar(target.userData.dossierTint);
+      }
+    });
+    target.add(model);onReady();
+  },undefined,()=>{
+    const backup=folio(title,accent);
+    backup.rotation.x=-Math.PI/2;target.add(backup);onReady();
+  });
+}
+function contactShadow(x,y,z,w,d){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.ShadowMaterial({opacity:.31}));
+  m.rotation.x=-Math.PI/2;m.position.set(x,y,z);m.receiveShadow=true;return m;
+}
+function softShadow(x,z,w,d,y=.012,opacity=.8){
+  const map=canvasTexture((ctx,s)=>{
+    const grad=ctx.createRadialGradient(s/2,s/2,s*.08,s/2,s/2,s*.49);
+    grad.addColorStop(0,'rgba(24,38,47,.38)');
+    grad.addColorStop(.57,'rgba(24,38,47,.14)');
+    grad.addColorStop(1,'rgba(24,38,47,0)');
+    ctx.fillStyle=grad;ctx.fillRect(0,0,s,s);
+  },256,256);
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({map,transparent:true,opacity,depthWrite:false,toneMapped:false}));
+  m.rotation.x=-Math.PI/2;m.position.set(x,y,z);m.renderOrder=1;return m;
+}
+function billboardShadow(x,y,z,w,h,opacity=.7){
+  const map=canvasTexture((ctx,s)=>{
+    const grad=ctx.createRadialGradient(s/2,s/2,s*.10,s/2,s/2,s*.49);
+    grad.addColorStop(0,'rgba(22,27,30,.55)');
+    grad.addColorStop(.45,'rgba(22,27,30,.25)');
+    grad.addColorStop(1,'rgba(22,27,30,0)');
+    ctx.fillStyle=grad;ctx.fillRect(0,0,s,s);
+  },256,256);
+  const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map,transparent:true,opacity,depthWrite:false,depthTest:true}));
+  sprite.position.set(x,y,z);sprite.scale.set(w,h,1);return sprite;
+}
+
+function propertyScene(onReady=()=>{}){
+  const g=new THREE.Group();
+  const contract=new THREE.Group();
+  contract.position.set(2.76,1.75,1.47);contract.scale.setScalar(1.60);contract.rotation.set(.13,-.16,0);g.add(contract);
+  mountDossier(saleURL,contract,'ДОГОВОР ОТЧУЖДЕНИЯ','#005da6',onReady);
+  const property=new THREE.Group();
+  property.userData.dossierTint=.68;
+  property.position.set(2.75,1.52,1.48);
+  property.scale.setScalar(1.20);
+  property.rotation.set(.15,-.16,0);
+  const contractShadow=softShadow(2.76,1.50,2.9,2.8,1.742,1);
+  const contractDecal=billboardShadow(2.78,1.63,1.30,3.3,.62,.72);
+  const penDecal=billboardShadow(3.78,1.61,1.33,.72,.34,.58);
+  const propertyShadow=softShadow(2.75,1.48,4.2,2.8,1.505,.75);
+  g.add(property,contractShadow,contractDecal,penDecal,propertyShadow);
+  mountDossier(propertyURL,property,'ВЫПИСКА ЕГРН','#005da6',onReady);
+  g.userData.subjects={property,contract};
+  g.userData.shadows={propertyShadow,contractShadow,contractDecal,penDecal};
+  g.userData.anchors={building:new THREE.Vector3(.15,2.35,-1.9),document:new THREE.Vector3(2.57,1.25,1.48)};
+  return g;
 }
 
 function shipmentCase(){
@@ -342,21 +450,48 @@ function workstation(type=0){
   const handle=solid(.18,.023,.025,frame,type?-.87:.81,.91,-.15);g.add(handle);
   return g;
 }
-function officeScene(){
+function officeScene(onReady=()=>{}){
   const g=new THREE.Group();
-  g.add(photoPlate(caseIIImage));
-  const cart=deliveryCart();cart.scale.setScalar(.82);cart.position.set(-2.59,.02,1.12);cart.rotation.y=-.14;g.add(cart);
-  const casework=shipmentCase();casework.scale.setScalar(.72);casework.position.set(2.90,.15,1.03);casework.rotation.y=.19;g.add(casework);
-  g.userData.subjects={cart,casework};
+  const instrument=new THREE.Group();instrument.position.set(2.95,.88,1.40);instrument.scale.setScalar(1.13);instrument.rotation.y=-.16;g.add(instrument);
+  new GLTFLoader().load(equipmentURL,asset=>{
+    const model=asset.scene,box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3());
+    model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
+    for(let i=0;i<2;i++){
+      const instance=i?model.clone(true):model;
+      instance.position.set((i?1.18:-1.18)-center.x,-box.min.y,-center.z-(i?.24:0));
+      instance.rotation.y=i?.14:-.075;
+      instrument.add(instance);
+    }
+    onReady();
+  },undefined,onReady);
+  const supply=new THREE.Group();supply.position.set(2.86,.92,1.38);supply.scale.setScalar(1.42);supply.rotation.set(.14,-.19,0);g.add(supply);
+  supply.userData.dossierTint=.58;
+  const equipmentShadow=new THREE.Group();
+  equipmentShadow.add(softShadow(1.62,1.40,2.30,2.1,.876,.70),softShadow(4.28,1.40,2.30,2.1,.876,.70));
+  const supplyShadow=softShadow(2.86,1.38,4.4,2.9,.914,.76);
+  g.add(equipmentShadow,supplyShadow);
+  mountDossier(supplyURL,supply,'ДОГОВОР ПОСТАВКИ','#ef5b35',onReady);
+  g.userData.subjects={supply,instrument};
+  g.userData.shadows={supplyShadow,equipmentShadow};
   g.userData.anchors={left:new THREE.Vector3(-2.5,1.3,1.7),right:new THREE.Vector3(2.5,1.45,1.8),boundary:new THREE.Vector3(0,2.3,.4)};
   return g;
 }
-function registryScene(){
+function registryScene(onReady=()=>{}){
   const g=new THREE.Group();
-  g.add(photoPlate(caseIIIImage,33,6.4,3.15));
-  // The file is geometrically independent of the photographed intake counter.
-  const file=registryFile();file.position.set(2.52,.49,1.38);file.rotation.y=-.13;g.add(file);
-  g.userData.subjects={file};
+  const privateContract=new THREE.Group();privateContract.position.set(2.35,.96,1.40);privateContract.scale.setScalar(1.82);privateContract.rotation.set(.13,-.20,0);privateContract.userData.paperTint='#eadbc4';g.add(privateContract);
+  mountDossier(saleURL,privateContract,'ДОГОВОР КУПЛИ-ПРОДАЖИ','#cf6c43',onReady);
+  // The Blender dossier has cloth, separate signatures, corner fittings and index tabs.
+  const file=new THREE.Group();file.position.set(2.48,.96,1.42);file.scale.setScalar(1.16);file.rotation.set(.15,-.20,0);g.add(file);
+  file.userData.dossierTint=.58;
+  const privateShadow=softShadow(2.35,1.40,3.1,2.8,.953,.72);
+  // The marble top is represented by the photographic plate. A small,
+  // feathered shadow follows the lower visible edge of the paper.
+  const privateDecal=billboardShadow(2.35,.39,1.24,3.05,.37,.46);
+  const fileShadow=softShadow(2.48,1.42,3.9,2.6,.954,.77);
+  g.add(privateShadow,privateDecal,fileShadow);
+  mountDossier(dossierURL,file,'РЕГИСТРАЦИОННОЕ ДЕЛО','#087d70',onReady);
+  g.userData.subjects={file,privateContract};
+  g.userData.shadows={fileShadow,privateShadow,privateDecal};
   g.userData.anchors={contract:new THREE.Vector3(-1.9,1.58,1.3),register:new THREE.Vector3(2.15,1.48,1.85),treasury:new THREE.Vector3(3.5,2.4,-.2)};
   return g;
 }
@@ -410,6 +545,12 @@ function setupStage(container,onModeChange){
   const scene=new THREE.Scene();scene.background=null;
   const camera=new THREE.PerspectiveCamera(34,1,.05,150);
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+  const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info');
+  const device=String(debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER));
+  if(new URLSearchParams(location.search).get('forceWebGL')!=='1'&&/SwiftShader|Software Renderer|llvmpipe|softpipe/i.test(device)){
+    renderer.dispose();renderer.forceContextLoss();
+    throw new Error('Software WebGL renderer: '+device);
+  }
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.84;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.domElement.className='civilist-webgl';
@@ -432,43 +573,55 @@ function setupStage(container,onModeChange){
 
 function cameraRoute(view,caseIndex,step,reading){
   if(view==='home')return [
-    [[.15,4.72,9.6],[0,1.7,0]], [[-1.12,5.10,8.85],[-1.5,1.82,0]],
-    [[1.10,4.35,8.75],[.9,1.68,0]], [[1.65,5.44,9.6],[1.0,1.48,0]],
-    [[.15,4.72,9.6],[0,1.7,0]]
+    [[.15,4.08,9.65],[0,1.75,0]], [[-.58,3.81,9.28],[-.4,1.82,0]],
+    [[.76,4.16,9.27],[.45,1.73,0]], [[1.04,3.96,9.73],[.35,1.78,0]],
+    [[.15,4.08,9.65],[0,1.75,0]]
   ];
   const i=caseIndex,s=step,focus=reading?1:0;
   if(view==='final')return [
-    [[.2,5.0,15],[0,2.25,0]], [[-1.4,4.5,13.8],[-2,2.1,0]],
-    [[1.4,3.7,13.4],[2,2.1,0]], [[.2,5.2,15],[0,2.25,0]],[[.2,5.0,15],[0,2.25,0]]
+    [[.2,4.7,15.6],[0,2.15,0]], [[.05,4.62,15.35],[-.15,2.12,0]],
+    [[.42,4.82,15.45],[.18,2.20,0]], [[.28,4.72,15.60],[.08,2.15,0]],[[.2,4.7,15.6],[0,2.15,0]]
   ];
+  if(reading){
+    const subjectX=[2.75,2.86,2.48][i],look=subjectX+(i===2?2.75:2.40);
+    return [
+      [[look,4.20,12.9],[look,1.66,0]],
+      [[look-.22,4.10,12.6],[look,1.58,.05]],
+      [[look+.20,4.42,12.7],[look,1.78,-.05]],
+      [[look+.30,4.26,13.0],[look,1.64,0]],
+      [[look,4.20,12.9],[look,1.66,0]]
+    ];
+  }
   if(i===0){
-    const near=[0,1,2,3,4,5,6].map((_,k)=>[k===0?2.65:k===4?3.45:k===2?1.7:2.9,4.5+(k%2)*.30,k===0?12.2:10.8]);
+    const near=[0,1,2,3,4,5,6].map((_,k)=>[k===0?2.65:k===4?3.25:k===2?1.7:2.9,4.55+(k%2)*.18,k===0?12.2:12.0]);
     const x=near[s][0];
     return [
       [[x+focus*1.4,near[s][1],near[s][2]+focus*1.7],[x-2.0,2.5,.1]],
-      [[x-.7+focus*1.4,3.55,9.7+focus*1.7],[x-1.9,2.1,.3]],
-      [[x+.62+focus*1.4,4.95,10.1+focus*1.7],[x-1.6,3.1,-.1]],
-      [[x+1.0+focus*1.4,4.05,11.1+focus*1.7],[x-1.8,2.5,.2]],
+      [[x-.52+focus*1.4,4.22,11.65+focus*1.7],[x-1.9,2.35,.3]],
+      [[x+.52+focus*1.4,4.86,11.8+focus*1.7],[x-1.6,2.92,-.1]],
+      [[x+.84+focus*1.4,4.30,12.15+focus*1.7],[x-1.8,2.5,.2]],
       [[x+focus*1.4,near[s][1],near[s][2]+focus*1.7],[x-2.0,2.5,.1]]
     ];
   }
   if(i===1){
     const x=[0,-2.0,2.0,0,1.0,0][s];
+    const lift=s===4?-.30:0;
     return [
-      [[x+focus*1.7,3.9,12.9+focus*1.6],[x,1.65,0]],
-      [[x-.75+focus*1.7,3.16,10.8+focus*1.6],[x-.3,1.7,.3]],
-      [[x+.65+focus*1.7,4.1,10.6+focus*1.6],[x,2.1,0]],
-      [[x+1.25+focus*1.7,3.55,11.9+focus*1.6],[x+.25,1.6,.2]],
-      [[x+focus*1.7,3.9,12.9+focus*1.6],[x,1.65,0]]
+      [[x+focus*1.7,4.27,13.1+focus*1.6],[x,1.95+lift,0]],
+      [[x-.45+focus*1.7,4.16,12.8+focus*1.6],[x-.3,1.95+lift,.3]],
+      [[x+.50+focus*1.7,4.50,12.7+focus*1.6],[x,2.18+lift,0]],
+      [[x+.82+focus*1.7,4.20,13.0+focus*1.6],[x+.25,1.90+lift,.2]],
+      [[x+focus*1.7,4.27,13.1+focus*1.6],[x,1.95+lift,0]]
     ];
   }
   const x=[0,-2.1,-.1,.8,1.4,-1.6,1.0,2.2,.2][s];
+  const lift=s===8?-.62:s===1?-1.0:0;
   return [
-    [[x+focus*1.65,3.55,12.1+focus*1.8],[x,2.05,.1]],
-    [[x-.9+focus*1.65,2.7,10.2+focus*1.8],[x-.35,1.5,.45]],
-    [[x+.8+focus*1.65,4.2,10.5+focus*1.8],[x+.1,2.7,-.15]],
-    [[x+1.1+focus*1.65,3.2,11.3+focus*1.8],[x,1.95,.2]],
-    [[x+focus*1.65,3.55,12.1+focus*1.8],[x,2.05,.1]]
+    [[x+focus*1.65,4.15,12.9+focus*1.8],[x,2.15+lift,.1]],
+    [[x-.55+focus*1.65,3.95,12.55+focus*1.8],[x-.35,1.92+lift,.45]],
+    [[x+.60+focus*1.65,4.45,12.5+focus*1.8],[x+.1,2.58+lift,-.15]],
+    [[x+.80+focus*1.65,4.05,12.95+focus*1.8],[x,2.08+lift,.2]],
+    [[x+focus*1.65,4.15,12.9+focus*1.8],[x,2.15+lift,.1]]
   ];
 }
 
@@ -489,6 +642,8 @@ function createFallback(container,{onSelectBook,onDocument}){
       .cv-fallback-photo:not(.cv-outgoing){animation:cv-photo-enter .85s ease-out both}
       .cv-fallback-photo:not(.cv-outgoing) img{animation-duration:var(--cv-duration,31s)}
       .cv-detail,.cv-evidence-note,.cv-fallback-document{z-index:3}
+      @media(min-width:801px){.cv-fallback[data-case="2"][data-step="1"]:not(.is-reading) .cv-fallback-document{bottom:calc(165px + 2%);width:min(16vw,240px);height:min(20vw,270px)} .cv-fallback[data-case="2"][data-step="1"]:not(.is-reading) .cv-detail{display:none}}
+      @media(min-width:3200px){.cv-fallback[data-case="2"][data-step="1"]:not(.is-reading) .cv-fallback-document{bottom:calc(289px + 2%)}}
       @keyframes cv-photo-enter{0%{opacity:.45}100%{opacity:1}}
       @keyframes cv-photo-exit{0%{opacity:1}100%{opacity:0}}
       .case-view[data-placement=right] .cv-photo-link{clip-path:inset(0 51% 0 0)}
@@ -586,6 +741,7 @@ function createFallback(container,{onSelectBook,onDocument}){
   };
   return {
     show(view,i=0,step=0){
+      el.dataset.case=String(i);el.dataset.step=String(step);
       const outgoing=el.querySelector('.cv-fallback-photo')?.cloneNode(true);
       outgoing?.querySelector('svg')?.remove();
       el.classList.remove('is-reading');
@@ -610,23 +766,30 @@ function createFallback(container,{onSelectBook,onDocument}){
 export function createScene(container,{onSelectBook=()=>{},onDocument=()=>{},onModeChange=()=>{}}={}){
   let view='home',caseIndex=0,step=0,motion=true,reading=false;
   let stage,fallback=null,fallen=false,mode='webgl';
-  const switchMode=nextMode=>{mode=nextMode;onModeChange(nextMode);if(nextMode==='fallback'){fallen=true;fallback??=createFallback(container,{onSelectBook,onDocument});fallback.show(view,caseIndex,step);fallback.setMotion(motion);fallback.setReading(reading);stage?.renderer.domElement.style.setProperty('display','none')}};
+  const switchMode=nextMode=>{mode=nextMode;onModeChange(nextMode);if(nextMode==='fallback'){fallen=true;container.style.backgroundImage='';fallback??=createFallback(container,{onSelectBook,onDocument});fallback.show(view,caseIndex,step);fallback.setMotion(motion);fallback.setReading(reading);stage?.renderer.domElement.style.setProperty('display','none')}};
   try{stage=setupStage(container,switchMode)}catch(error){switchMode('fallback');return {show:(...args)=>fallback.show(...args),setMotion:m=>fallback.setMotion(m),setReading:open=>fallback.setReading(open),destroy:()=>fallback.destroy()}}
   switchMode('webgl');
   const {scene,camera,renderer,key,rim}=stage;
+  let dirty=true;
+  const forceWebGL=new URLSearchParams(location.search).get('forceWebGL')==='1';
+  let lastResourceAt=performance.now(),fpsStart=0,fpsFrames=0;
+  const markDirty=()=>{dirty=true;lastResourceAt=performance.now();fpsStart=0;fpsFrames=0};
+  document.addEventListener('civilist-texture-ready',markDirty);
   const sets=[new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group(),new THREE.Group()];
   sets.forEach(s=>{scene.add(s);s.visible=false});
-  const books=[0,1,2].map(volume);
-  const homeAngles=[[ -.12,.31,-.07],[-.10,-.28,.045],[-.16,.24,-.055]];
-  books.forEach((b,i)=>{b.position.set((i-1)*2.76,0,i===1?.34:i===2?-.18:.06);b.rotation.set(...homeAngles[i]);sets[0].add(b)});
-  const scenes=[facade(),officeScene(),registryScene()];scenes.forEach((g,i)=>sets[i+1].add(g));
+  const books=[0,1,2].map(i=>volume(i,markDirty));
+  const homeAngles=[[-.06,.38,-.04],[-.06,-.38,.03],[-.04,.28,-.03]];
+  const homePositions=[[-3.05,0,.06],[.02,0,.25],[3.05,0,-.18]];
+  books.forEach((b,i)=>{b.position.set(...homePositions[i]);b.rotation.set(...homeAngles[i]);sets[0].add(b)});
+  sets[0].add(softShadow(-3.05,.10,3.3,1.45),softShadow(.02,.22,3.3,1.45),softShadow(3.05,-.14,3.3,1.45));
+  const scenes=[propertyScene(markDirty),officeScene(markDirty),registryScene(markDirty)];scenes.forEach((g,i)=>sets[i+1].add(g));
   // Physical document folios sit within the room, but actual legal text remains crisp HTML.
   const folios=documentSpecs.map((caseDocs,i)=>caseDocs.map(([title,color],j)=>{
     const f=folio(title,color,j);sets[i+1].add(f);f.visible=false;return f;
   }));
   const ties=[
     [
-      relation([[-3.05,3.12,.72],[-2.4,3.72,1.14],[-.12,3.48,.72]],'#0985bb','ownership'),
+      relation([[.15,2.35,-1.2],[1.15,3.05,.05],[2.57,2.23,1.48]],'#0985bb','ownership'),
       relation([[1.78,2.24,.41],[2.17,3.06,.72],[2.94,2.89,1.1]],'#df7540','authority'),
       relation([[-1.3,1.95,.65],[.4,1.5,1.18],[2.2,1.32,1.2]],'#0d998f','obligation')
     ],[
@@ -641,27 +804,49 @@ export function createScene(container,{onSelectBook=()=>{},onDocument=()=>{},onM
   ];
   ties.forEach((a,i)=>a.forEach(t=>{t.visible=false;sets[i+1].add(t)}));
   // The final scene is one complete physical composition, not flattened screenshots.
-  const fin=sets[4];const smallBooks=[0,1,2].map(volume);smallBooks.forEach((b,i)=>{
-    b.scale.setScalar(.72);b.position.set((i-1)*3.2,.01,0);b.rotation.set(-.10,(i-1)*-.19,(i-1)*-.025);fin.add(b)
+  const fin=sets[4];
+  const smallBooks=[0,1,2].map(i=>volume(i,markDirty));smallBooks.forEach((b,i)=>{
+    b.scale.setScalar(.82);b.position.set(-.5+i*2.6,2.55,.08);b.rotation.set(-.06,[.55,-.56,.40][i],(i-1)*-.015);fin.add(b);
+    fin.add(billboardShadow(-.5+i*2.6,2.495,-.15,2.55,.28,.38));
   });
-  const finalTies=[relation([[-3.1,3.04,.2],[-1.6,4.25,.2],[0,3.02,.3]],'#0875b8','ownership'),relation([[.0,3.15,.2],[1.5,4.02,.2],[3.2,3.2,.2]],'#ea694b','authority')];finalTies.forEach(t=>fin.add(t));
-  let alive=true,raf=0,phase=0,last=performance.now(),dirty=true;
-  let currentEye=new THREE.Vector3(.15,4.72,9.6),currentTarget=new THREE.Vector3(0,1.7,0),route=cameraRoute('home',0,0,false);
+  // The final propositions stay in the HTML safe zone; earlier case ties
+  // already disclose each legal relation beside its actual evidence.
+  let alive=true,raf=0,phase=0,last=performance.now();
+  let currentEye=new THREE.Vector3(.15,4.08,9.65),currentTarget=new THREE.Vector3(0,1.75,0),route=cameraRoute('home',0,0,false);
   let desiredEye=currentEye.clone(),desiredTarget=currentTarget.clone();
   let inspect=null,drag=null,dragBook=null,freezeUntil=0;
   function changeVisibility(){
     sets.forEach((g,i)=>g.visible=(view==='home'?i===0:view==='final'?i===4:i===caseIndex+1));
-    stage.floor.visible=view==='home'||view==='final';
-    stage.shadowFloor.visible=view==='case';
+    stage.floor.visible=false;
+    // A ground-plane shadow over the photographic room reveals its polygonal
+    // projection, especially beside the reader. Each object uses a local
+    // feathered contact decal instead.
+    stage.shadowFloor.visible=false;
+    const [a,b,c]=scenes.map(g=>g.userData.subjects);
+    const [as,bs,cs]=scenes.map(g=>g.userData.shadows);
+    a.contract.visible=as.contractShadow.visible=view==='case'&&caseIndex===0&&step<2;
+    as.contractDecal.visible=as.penDecal.visible=a.contract.visible;
+    a.property.visible=as.propertyShadow.visible=view==='case'&&caseIndex===0&&step>=2;
+    b.instrument.visible=bs.equipmentShadow.visible=view==='case'&&caseIndex===1&&step===0;
+    b.supply.visible=bs.supplyShadow.visible=view==='case'&&caseIndex===1&&step>0;
+    c.privateContract.visible=cs.privateShadow.visible=view==='case'&&caseIndex===2&&step<2;
+    cs.privateDecal.visible=c.privateContract.visible;
+    c.file.visible=cs.fileShadow.visible=view==='case'&&caseIndex===2&&step>=2;
     folios.forEach((group,i)=>group.forEach((f,j)=>{
-      const index=documentIndex[i][step];f.visible=view==='case'&&i===caseIndex&&j===index;
+      const index=documentIndex[i][step];f.visible=view==='case'&&i===caseIndex&&j===index&&!(i===0&&step===1)&&!(i===2&&step===1);
       if(f.visible){
-        const x=i===0?2.92:i===1?(step===1?-3.30:step===2?3.18:2.95):(step%2?-3.08:2.93);
-        f.position.set(x,2.11,i===1?1.04:1.16);f.rotation.set(-.08,(x>0?-.17:.17),x>0?-.045:.06);
+        const subject=scenes[i].userData.subjects;
+        const host=i===0?subject.property:i===1?subject.supply:subject.file;
+        const top=[.43,.40,.47][i];
+        f.scale.setScalar(.70);
+        f.position.set(host.position.x+(step%2?.25:-.18),host.position.y+host.scale.x*top+.018,host.position.z+.10);
+        f.userData.baseY=f.position.y;
+        f.rotation.set(-1.38,host.rotation.y,step%2?-.055:.045);
+        f.userData.baseRotationY=host.rotation.y;
       }
     }));
     ties.forEach((group,i)=>group.forEach((t,j)=>{
-      t.visible=view==='case'&&i===caseIndex&&(
+      t.visible=view==='case'&&!reading&&i===caseIndex&&(
         i===0?step>=[2,4,6][j]:i===1?step>=[1,2,4][j]:step>=[1,2,8][j]
       );
     }));
@@ -674,7 +859,8 @@ export function createScene(container,{onSelectBook=()=>{},onDocument=()=>{},onM
     return {eye,target};
   }
   function draw(now){
-    if(!alive||fallen)return;
+    raf=0;
+    if(!alive||fallen||document.hidden)return;
     const delta=Math.min(.08,(now-last)/1000||0);last=now;
     if(motion&&!drag&&now>freezeUntil)phase+=delta;
     if(motion&&!drag&&now>freezeUntil){
@@ -682,34 +868,58 @@ export function createScene(container,{onSelectBook=()=>{},onDocument=()=>{},onM
       desiredEye.copy(pose.eye);desiredTarget.copy(pose.target);
     }
     // Motion stops at the current pose; step changes blend from that pose.
-    currentEye.lerp(desiredEye,motion?Math.min(1,delta*2.2):1);
-    currentTarget.lerp(desiredTarget,motion?Math.min(1,delta*2.2):1);
+    const cameraBlend=motion?(reading?Math.max(.55,Math.min(1,delta*7)):Math.min(1,delta*2.2)):1;
+    currentEye.lerp(desiredEye,cameraBlend);
+    currentTarget.lerp(desiredTarget,cameraBlend);
     if(inspect){
       const o=inspect.book;
       o.rotation.y=THREE.MathUtils.lerp(o.rotation.y,inspect.yaw,Math.min(1,delta*7));
       o.rotation.x=THREE.MathUtils.lerp(o.rotation.x,inspect.pitch,Math.min(1,delta*7));
     }
     if(motion&&!drag&&view==='home'){
-      books.forEach((b,i)=>{if(inspect?.book!==b){b.rotation.y+=(i%2?1:-1)*delta*.003;b.position.y=Math.sin(phase*.33+i*1.1)*.018}});
+      // Bounded paths return to the original composition: never accumulate
+      // rotation over a long seminar or turn the covers permanently away.
+      books.forEach((b,i)=>{b.rotation.y=homeAngles[i][1]+Math.sin(phase*.14+i*1.7)*.065;
+        b.position.y=homePositions[i][1]+Math.sin(phase*.33+i*1.1)*.018});
+    }
+    if(view==='final'){
+      const finalScale=.82;
+      if(smallBooks[0].scale.x!==finalScale)smallBooks.forEach(b=>b.scale.setScalar(finalScale));
     }
     if(motion&&!drag&&view==='case'){
       const f=folios[caseIndex][documentIndex[caseIndex][step]];
-      if(f){f.rotation.y+=(Math.sin(phase*.5+step)*.0007);f.position.y=2.11+Math.sin(phase*.79+step)*.016}
+      if(f){f.rotation.y=f.userData.baseRotationY+Math.sin(phase*.5+step)*.014;f.position.y=f.userData.baseY+Math.sin(phase*.79+step)*.006}
       ties[caseIndex].forEach((t,j)=>{if(t.visible)t.traverse(o=>{if(o.isMesh&&o.material?.transparent)o.material.opacity=.74+.15*Math.sin(phase*.65+j)})});
       const beat=phase*.145,subjects=scenes[caseIndex].userData.subjects;
-      if(subjects?.cart)subjects.cart.position.x=-2.59+Math.sin(beat)*.035;
-      if(subjects?.casework){
-        subjects.casework.rotation.y=.19+Math.sin(beat*.74)*.025;
-        subjects.casework.userData.lid.rotation.x=-.30+Math.sin(beat*.67)*.025;
-      }
-      if(subjects?.file)subjects.file.rotation.y=-.13+Math.sin(beat*.9)*.035;
+      if(subjects?.property)subjects.property.rotation.y=-.16+Math.sin(beat*.8)*.025;
+      if(subjects?.contract)subjects.contract.rotation.y=-.16+Math.sin(beat*.68)*.018;
+      if(subjects?.supply)subjects.supply.rotation.y=-.19+Math.sin(beat*.74)*.025;
+      if(subjects?.instrument)subjects.instrument.rotation.y=-.16+Math.sin(beat*.57)*.028;
+      if(subjects?.file)subjects.file.rotation.y=-.20+Math.sin(beat*.9)*.025;
+      if(subjects?.privateContract)subjects.privateContract.rotation.y=-.20+Math.sin(beat*.7)*.02;
     }
     rim.position.x=4+Math.sin(phase*.13)*1.7;key.position.x=-5+Math.sin(phase*.11)*1.0;
-    if(!document.hidden&&(motion||drag||dirty)){
+    if(motion||drag||dirty){
       camera.position.copy(currentEye);camera.lookAt(currentTarget);renderer.render(scene,camera);dirty=false;
+    }
+    // An unidentifiable software renderer still gets a smooth photographic
+    // reserve after a steady low frame rate. Wait for asynchronous assets and
+    // fonts to settle; the technical override keeps WebGL QA deterministic.
+    if(!forceWebGL&&motion&&!drag&&now-lastResourceAt>2500){
+      if(!fpsStart){fpsStart=now;fpsFrames=0}
+      fpsFrames++;
+      if(now-fpsStart>=5000){
+        if(fpsFrames*1000/(now-fpsStart)<12){switchMode('fallback');return}
+        fpsStart=now;fpsFrames=0;
+      }
     }
     raf=requestAnimationFrame(draw);
   }
+  const visibility=()=>{
+    if(document.hidden){cancelAnimationFrame(raf);raf=0;return}
+    last=performance.now();dirty=true;
+    if(!raf&&alive&&!fallen)raf=requestAnimationFrame(draw);
+  };
   const pickBook=e=>{
     const box=container.getBoundingClientRect(),p=new THREE.Vector2((e.clientX-box.left)/box.width*2-1,1-(e.clientY-box.top)/box.height*2);
     const ray=new THREE.Raycaster();ray.setFromCamera(p,camera);
@@ -718,7 +928,9 @@ export function createScene(container,{onSelectBook=()=>{},onDocument=()=>{},onM
   };
   const down=e=>{
     if(view==='home'){
-      const i=pickBook(e);if(i<0)return;dragBook=i;inspect={book:books[i],yaw:books[i].rotation.y,pitch:books[i].rotation.x};
+      const i=pickBook(e);if(i<0)return;dragBook=i;
+      const pivot=books[i].userData.inspectionPivot;
+      inspect={book:pivot,yaw:pivot.rotation.y,pitch:pivot.rotation.x};
     }
     drag={x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,eye:currentEye.clone(),target:currentTarget.clone(),moved:false};
     renderer.domElement.setPointerCapture(e.pointerId);
@@ -738,26 +950,44 @@ export function createScene(container,{onSelectBook=()=>{},onDocument=()=>{},onM
     if(!drag)return;const clicked=!drag.moved;
     drag=null;freezeUntil=performance.now()+1800;
     try{renderer.domElement.releasePointerCapture(e.pointerId)}catch{}
+    if(inspect){inspect.book.rotation.y=inspect.yaw;inspect.book.rotation.x=inspect.pitch;inspect=null;dirty=true}
     if(view==='home'&&clicked&&dragBook>=0)onSelectBook(dragBook);
     else if(view==='case'&&clicked&&documentIndex[caseIndex][step]>=0)onDocument();
     dragBook=null;
   };
   renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointermove',move);
   renderer.domElement.addEventListener('pointerup',up);renderer.domElement.addEventListener('pointercancel',up);
-  changeVisibility();raf=requestAnimationFrame(draw);
+  document.addEventListener('visibilitychange',visibility);
+  changeVisibility();if(!document.hidden)raf=requestAnimationFrame(draw);
   return {
     show(nextView='home',nextCase=0,nextStep=0){
+      inspect=null;drag=null;dragBook=null;
       view=nextView;caseIndex=clamp(nextCase,0,2);step=clamp(nextStep,0,[6,5,8][caseIndex]);
       reading=false;route=cameraRoute(view,caseIndex,step,false);changeVisibility();dirty=true;
+      scenes[2].userData.subjects.privateContract.scale.setScalar(1.82);
+      // A full bleed environment photograph sits behind the transparent
+      // WebGL canvas. No finite plane can be exposed by camera travel.
+      if(!fallen){
+        container.style.backgroundImage=view==='case'?'url("'+cleanImages[caseIndex]+'")':'';
+        container.style.backgroundSize='cover';
+        container.style.backgroundPosition='center';
+      }
       fallback?.show(view,caseIndex,step);
       const p=cameraAt(phase+(view==='case'?step*.38+caseIndex*.71:0));desiredEye.copy(p.eye);desiredTarget.copy(p.target);
     },
     setMotion(enabled){motion=!!enabled;dirty=true;fallback?.setMotion(motion);if(!motion){desiredEye.copy(currentEye);desiredTarget.copy(currentTarget)}},
     setReading(open){reading=!!open;dirty=true;fallback?.setReading(reading);route=cameraRoute(view,caseIndex,step,reading);
+      scenes[2].userData.subjects.privateContract.scale.setScalar(reading?1.70:1.82);
+      if(view==='case'){
+        container.style.backgroundSize=reading?(caseIndex===0?'155% auto':caseIndex===1?'165% auto':'cover'):'cover';
+        container.style.backgroundPosition=reading?(caseIndex===2?'80% center':caseIndex===0?'100% 94%':'100% 54%'):'center';
+      }
+      changeVisibility();
       const p=cameraAt(phase+(view==='case'?step*.38+caseIndex*.71:0));desiredEye.copy(p.eye);desiredTarget.copy(p.target);
+      if(reading){currentEye.lerp(desiredEye,.72);currentTarget.lerp(desiredTarget,.72)}
     },
     get mode(){return mode},
-    destroy(){alive=false;cancelAnimationFrame(raf);renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerup',up);renderer.domElement.removeEventListener('pointercancel',up);
+    destroy(){alive=false;cancelAnimationFrame(raf);document.removeEventListener('visibilitychange',visibility);document.removeEventListener('civilist-texture-ready',markDirty);container.style.backgroundImage='';renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerup',up);renderer.domElement.removeEventListener('pointercancel',up);
       const geos=new Set(),mats=new Set(),textures=new Set();scene.traverse(o=>{if(o.geometry)geos.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])mats.add(m)});
       mats.forEach(m=>{if(m.map)textures.add(m.map);if(m.bumpMap)textures.add(m.bumpMap);m.dispose()});geos.forEach(g=>g.dispose());textures.forEach(t=>t.dispose());fallback?.destroy();stage.dispose();
     }

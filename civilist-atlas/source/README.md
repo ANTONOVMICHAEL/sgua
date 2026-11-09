@@ -13,4 +13,6 @@ pnpm check
 
 Папка `dist/` предназначена для `civilist-atlas/` GitHub Pages. Автономный файл создается в `release/CIVILIST_atlas_offline.html`. Он содержит код и локальные шрифты, без CDN.
 
+Гарнитуры Onest, Literata и IBM Plex Mono распространяются по SIL Open Font License 1.1. Их уведомления и условия включены в `src/type/licenses/`.
+
 Приватный преподавательский ключ не входит в исходники и выпуск.

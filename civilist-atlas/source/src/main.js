@@ -1,6 +1,6 @@
 import './style.css';
 import {cases} from './content.js';
-import {homework} from './homework.js';
+import {homework,normNotes} from './homework.js';
 import {volumes,traces,synopsis,closingNotes} from './interpretation.js';
 import {createScene} from './scene.js';
 
@@ -94,7 +94,7 @@ function caseView(){
       <h1 id="case-heading" tabindex="-1">${esc(s.title)}</h1>
       <p class="case-lead">${esc(s.lead)}</p>
       ${s.fact?`<p class="case-fact">${esc(s.fact)}</p>`:''}
-      <div class="case-links">${s.doc?`<button data-action="document">Читать документ <span>↗</span></button>`:''}<button data-action="homework">Полное условие <span>↗</span></button>${s.reveal?`<button data-action="norms">Нормы и условия <span>↗</span></button>`:''}</div>
+      <div class="case-links">${s.doc?`<button data-action="document">Читать документ <span>↗</span></button>`:''}<button data-action="homework">Полное условие <span>↗</span></button>${s.reveal||normNotes[`${c.id}:${state.step}`]?`<button data-action="norms">Нормы и условия <span>↗</span></button>`:''}</div>
     </section>
     <div class="object-note"><span class="object-note-num">0${state.case+1} / ${pad(state.step+1)}</span><b>${esc(traces[state.case][state.step][0])}</b></div>
     <div class="case-bottom"><section class="question"><span>ВОПРОС АУДИТОРИИ</span><p>${esc(s.question)}</p></section>${relation()}</div>
@@ -119,7 +119,8 @@ function documentReader(kind){
     body=homework[state.case].map(p=>`<p class="reader-paragraph">${esc(p)}</p>`).join('');
   }else{
     title='Нормы и условия';tag='Правовая опора для обсуждения';
-    body=closingNotes[state.case].map(p=>`<p class="reader-paragraph">${esc(p)}</p>`).join('');
+    const note=normNotes[`${cases[state.case].id}:${state.step}`];
+    body=(s.reveal?closingNotes[state.case]:[note]).filter(Boolean).map(p=>`<p class="reader-paragraph">${esc(p)}</p>`).join('');
   }
   return `<div class="reader-top"><span>ДОСЬЕ ${volumes[state.case].roman} / ${pad(state.step+1)}</span><button data-action="close" aria-label="Закрыть документ">✕</button></div>
     <div class="reader-scroll" style="--reader-zoom:${state.zoom}">
