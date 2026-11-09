@@ -1,17 +1,14 @@
 {
-  "name": "civilist-legal-atlas",
+  "name": "civilist-atlas-reconstruction",
+  "version": "7.0.0",
   "private": true,
-  "version": "5.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite build && vite build --mode offline --outDir offline && node scripts/package.mjs",
-    "preview": "vite preview --host 127.0.0.1",
-    "test": "node scripts/verify.mjs"
+    "check": "node scripts/check.mjs"
   },
   "dependencies": {
-    "@fontsource/cormorant-garamond": "^5.3.0",
-    "@fontsource/manrope": "^5.3.0",
     "three": "0.187.0"
   },
   "devDependencies": {
