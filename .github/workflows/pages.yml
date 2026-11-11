@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -23,25 +23,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Import verified Civilist release
-        if: ${{ hashFiles('civilist-equal/index.html') == '' }}
-        shell: bash
-        run: |
-          curl --fail --location --retry 3 https://civilist-equal-studio.alyshagf.chatgpt.site/downloads/CIVILIST_Source.zip -o /tmp/civilist.zip
-          echo "b94dedbcddf881559c1797ad50307142863d9c12db909ab50e82ec34ab94c734  /tmp/civilist.zip" | sha256sum -c -
-          unzip -q /tmp/civilist.zip -d /tmp/civilist-source
-          mkdir -p civilist-equal/downloads civilist-equal/source-materials
-          cp -R /tmp/civilist-source/dist/. civilist-equal/
-          cp -R /tmp/civilist-source/source-materials/. civilist-equal/source-materials/
-          cp /tmp/civilist.zip civilist-equal/downloads/CIVILIST_Source.zip
-          for file in CIVILIST_OFFLINE.html CIVILIST_Notes.pdf CIVILIST_Screens.pdf CIVILIST_Checks.md; do
-            curl --fail --location --retry 3 "https://civilist-equal-studio.alyshagf.chatgpt.site/downloads/$file" -o "civilist-equal/downloads/$file"
-          done
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add civilist-equal
-          git commit -m "Publish Civilist Equal complete service and source assets"
-          git push
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
