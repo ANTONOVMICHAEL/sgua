@@ -1,0 +1,72 @@
+{
+  "status": "complete",
+  "source": "Original Blender architectural model. No previous Civilist model used.",
+  "renderer": "Blender 4.3.2 Workbench",
+  "source_frames": 150,
+  "source_frame_rate": 5,
+  "source_seconds": 30,
+  "interpolation": "FFmpeg linear frame interpolation (minterpolate mi_mode=blend), with cyclic boundary frames",
+  "encoding_seconds": 34.18769979476929,
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1920,
+        "height": 1080,
+        "avg_frame_rate": "27000/899",
+        "duration": "29.966667",
+        "nb_frames": "900"
+      }
+    ],
+    "format": {
+      "duration": "29.966667",
+      "size": "10471803"
+    }
+  },
+  "physical_motion": [
+    "16 degree total camera orbit",
+    "hall roof section opens",
+    "leased-room ceiling opens independently",
+    "leased facade wall shifts outward"
+  ],
+  "not_claimed": [
+    "900 independently rendered frames",
+    "Cycles/PBR lighting for the MP4",
+    "Reconstruction of a specific actual municipal building"
+  ],
+  "nominal_output_frame_rate": 30,
+  "actual_output_frame_rate": "27000/899",
+  "full_decode_check": {
+    "exit_code": 0,
+    "error_output": "",
+    "frames": 900
+  },
+  "framing_check": {
+    "sampled_source_frames": 150,
+    "bounds_xy_normalized": [
+      0.15838304162025452,
+      0.8416170477867126,
+      0.08884420990943909,
+      0.950481653213501
+    ],
+    "outside_points": 0,
+    "method": "Projection of each visible architectural object bounding-box corner; studio ground excluded"
+  },
+  "source_render_check": {
+    "frames_logged": 150,
+    "render_seconds_logged": 1029.663
+  },
+  "transparent_poster_check": {
+    "size": [
+      1440,
+      1080
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  }
+}
